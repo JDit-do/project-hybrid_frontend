@@ -27,8 +27,22 @@ const handler = NextAuth({
   },
   callbacks: {
     async redirect({ url, baseUrl }) {
-      // 로그인 성공 시 항상 홈으로
       return baseUrl + "/";
+    },
+
+    async jwt({ token, account }) {
+      if (account) {
+        if (account.access_token) token.access_token = account.access_token;
+        if (account.id_token) token.id_token = account.id_token;
+        if (account.expires_at) token.expires_at = account.expires_at;
+      }
+
+      return token;
+    },
+    async session({ session, token }) {
+      session.access_token = token.access_token as string | undefined;
+      session.id_token = token.id_token as string | undefined;
+      return session;
     },
   },
 });
