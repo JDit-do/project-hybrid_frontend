@@ -20,6 +20,7 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
+ENV HOST=0.0.0.0
 
 # 빌드 산출물만 복사
 COPY --from=builder /app/.next/standalone ./

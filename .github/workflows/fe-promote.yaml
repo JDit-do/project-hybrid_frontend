@@ -1,0 +1,44 @@
+name: fe-promote
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "git SHA or version vX.Y.Z"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  pull-requests: write
+  id-token: write
+
+env:
+  ENV_OVERLAY_REPO: ${{ secrets.ENV_OVERLAY_REPO }} # <ORG>/<GitOps Repo Overlay>
+  PROD_OVERLAY_PATH: ${{ secrets.PROD_OVERLAY_PATH }} # 위 Repo에서 Overlay Path
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout env overlay repo
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.ENV_OVERLAY_REPO }}
+          token: ${{ secrets.ENV_REPO_PAT }}
+          path: overlay
+
+      - name: Update kustomize image tag (Prod)
+        run: |
+          file="overlay/${PROD_OVERLAY_PATH}"
+          sed -i -E "s#(newTag: ).*#\1${{ inputs.tag }}#g" "$file"
+
+      - name: Create PR to env-config-prod
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.ENV_REPO_PAT }}
+          path: overlay
+          commit-message: "chore(prod): promote image to ${{ inputs.tag }}"
+          branch: chore/prod-promote-${{ github.run_id }}
+          title: "chore(prod): promote image to ${{ inputs.tag }}"
+          body: "Promote image to ${{ inputs.tag }}"
+          base: main

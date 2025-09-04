@@ -66,9 +66,14 @@ export default function UploadTestPage() {
 
       console.log("AppSync :", JSON.stringify(data, null, 2));
       alert("AppSync Test 완료");
-    } catch (error: any) {
-      console.error("AppSync :", error);
-      alert("AppSync Test 오류");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("업로드 실패:", error);
+        alert("AppSync Test 오류");
+      } else {
+        console.error("업로드 실패(알 수 없는 에러):", error);
+        alert("오류: unknown error");
+      }
     }
   };
 

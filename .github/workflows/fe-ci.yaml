@@ -1,0 +1,69 @@
+name: FE CI → ECR
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "README.md"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  id-token: write # OIDC
+  pull-requests: write # create-pull-request에서 사용
+
+env:
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  AWS_ECR_REPO: ${{ secrets.AWS_ECR_REPO }}
+  IMAGE_TAG: ${{ github.sha }}
+  ENV_OVERLAY_REPO: ${{ secrets.ENV_OVERLAY_REPO }} # <ORG>/<GitOps Repo Overlay>
+  DEV_OVERLAY_PATH: ${{ secrets.DEV_OVERLAY_PATH }} # 위 Repo에서 Overlay Path
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_OIDC_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build image
+        run: |
+          docker build -t $ECR_REPO:$IMAGE_TAG .
+          docker tag $ECR_REPO:$IMAGE_TAG ${{ steps.acct.outputs.id }}.dkr.ecr.${AWS_REGION}.amazonaws.com/$ECR_REPO:$IMAGE_TAG
+
+      - name: Push image
+        run: |
+          docker push ${{ steps.acct.outputs.id }}.dkr.ecr.${AWS_REGION}.amazonaws.com/$ECR_REPO:$IMAGE_TAG
+
+      - name: Checkout env overlay repo
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.ENV_OVERLAY_REPO }}
+          token: ${{ secrets.ENV_REPO_PAT }}
+          path: overlay
+
+      - name: Update kustomize image tag (Dev)
+        run: |
+          file="overlay/${DEV_OVERLAY_PATH}"
+          sed -i -E "s#(newTag: ).*#\1${IMAGE_TAG}#g" "$file"
+
+      - name: Create PR to env-config-dev
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.ENV_REPO_PAT }}
+          path: overlay
+          commit-message: "chore(dev): bump image to ${IMAGE_TAG}"
+          branch: chore/dev-bump-${{ github.sha }}
+          title: "chore(dev): bump image to ${{ github.sha }}"
+          body: "Update dev image tag to ${{ github.sha }}"
+          base: main
