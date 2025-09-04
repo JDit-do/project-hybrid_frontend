@@ -1,9 +1,10 @@
-name: fe-promote
+name: FE Promote
+
 on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "git SHA or version vX.Y.Z"
+        description: "승격할 이미지 태그 입력 (git SHA 또는 vX.Y.Z)"
         required: true
         type: string
 
@@ -13,8 +14,8 @@ permissions:
   id-token: write
 
 env:
-  ENV_OVERLAY_REPO: ${{ secrets.ENV_OVERLAY_REPO }} # <ORG>/<GitOps Repo Overlay>
-  PROD_OVERLAY_PATH: ${{ secrets.PROD_OVERLAY_PATH }} # 위 Repo에서 Overlay Path
+  ENV_OVERLAY_REPO: ORG/project-hybrid_frontend_gitops
+  PROD_OVERLAY_PATH: environments/prod/frontend/kustomization.yaml
 
 jobs:
   promote:
@@ -29,8 +30,11 @@ jobs:
 
       - name: Update kustomize image tag (Prod)
         run: |
+          set -eu
           file="overlay/${PROD_OVERLAY_PATH}"
           sed -i -E "s#(newTag: ).*#\1${{ inputs.tag }}#g" "$file"
+          echo "Result:"
+          grep -n "newTag:" "$file" || true
 
       - name: Create PR to env-config-prod
         uses: peter-evans/create-pull-request@v6
