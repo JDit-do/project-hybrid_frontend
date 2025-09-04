@@ -1,32 +1,39 @@
-name: FE CI → ECR
+name: FE CI on ECR
 
 on:
   push:
     branches: [main]
-    paths-ignore:
-      - "README.md"
-  workflow_dispatch: {}
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      bump_minor:
+        description: "버전 증가 방식을 선택 (true면 minor+1, 아니면 patch+1)"
+        required: false
+        type: boolean
+        default: false
 
 permissions:
+  id-token: write
   contents: read
-  id-token: write # OIDC
-  pull-requests: write # create-pull-request에서 사용
+  pull-requests: write
 
 env:
+  ECR_REPO: 
   AWS_REGION: ${{ secrets.AWS_REGION }}
-  AWS_ECR_REPO: ${{ secrets.AWS_ECR_REPO }}
+  ECR_REPO: ${{ secrets.ECR_REPO }}
   IMAGE_TAG: ${{ github.sha }}
-  ENV_OVERLAY_REPO: ${{ secrets.ENV_OVERLAY_REPO }} # <ORG>/<GitOps Repo Overlay>
-  DEV_OVERLAY_PATH: ${{ secrets.DEV_OVERLAY_PATH }} # 위 Repo에서 Overlay Path
+  ENV_OVERLAY_REPO: ${{ secrets.ENV_OVERLAY_REPO }}
+  DEV_OVERLAY_PATH: ${{ secrets.DEV_OVERLAY_PATH }}
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout app
+        uses: actions/checkout@v4
 
-      - name: Configure AWS (OIDC)
+      - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_OIDC_ROLE_ARN }}
@@ -36,15 +43,96 @@ jobs:
         id: ecr
         uses: aws-actions/amazon-ecr-login@v2
 
+      - name: Guard variables
+        run: |
+          set -eu
+          : "${ECR_REPO:?ECR_REPO is empty}"
+          : "${IMAGE_TAG:?IMAGE_TAG is empty}"
+          echo "REGISTRY=${{ steps.ecr.outputs.registry }}"
+          echo "ECR_REPO=${ECR_REPO}"
+          echo "IMAGE_TAG=${IMAGE_TAG}"
+
+      # (선택) 기존 ECR 태그를 보고 vMAJOR.MINOR.PATCH 자동결정
+      - name: Resolve version tag (vX.Y.Z)
+        id: ver
+        env:
+          DEFAULT_MAJOR: "1"
+        shell: bash
+        run: |
+          set -euo pipefail
+          BUMP="${{ github.event.inputs.bump_minor }}"
+          BUMP="$(echo "${BUMP:-false}" | tr '[:upper:]' '[:lower:]')"
+          echo "bump_minor=${BUMP}"
+
+          # 존재하는 버전 태그 목록 조회
+          EXISTING=$(
+            aws ecr describe-images \
+              --repository-name "${ECR_REPO}" \
+              --query "imageDetails[].imageTags[]" \
+              --output text 2>/dev/null | tr '\t' '\n' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' || true
+          )
+
+          MAJOR="${DEFAULT_MAJOR}"
+          if [ -n "${EXISTING}" ]; then
+            CUR_MINOR_MAX=$(printf '%s\n' ${EXISTING} \
+              | awk -F'[v\\.]' -v maj="${MAJOR}" '$2==maj {print $3}' \
+              | sort -n | tail -n1)
+            CUR_MINOR_MAX="${CUR_MINOR_MAX:-0}"
+          else
+            CUR_MINOR_MAX="0"
+          fi
+
+          if [ "${BUMP}" = "true" ]; then
+            MINOR=$(( CUR_MINOR_MAX + 1 ))
+            PATCH=0
+          else
+            MINOR="${CUR_MINOR_MAX}"
+            if [ -n "${EXISTING}" ]; then
+              PATCH_MAX=$(printf '%s\n' ${EXISTING} \
+                | awk -F'[v\\.]' -v maj="${MAJOR}" -v min="${MINOR}" '$2==maj && $3==min {print $4}' \
+                | sort -n | tail -n1)
+              PATCH=$([ -z "${PATCH_MAX:-}" ] && echo 0 || echo $((PATCH_MAX + 1)))
+            else
+              PATCH=0
+            fi
+          fi
+
+          VERSION_TAG="v${MAJOR}.${MINOR}.${PATCH}"
+          echo "version=${VERSION_TAG}" >> "$GITHUB_OUTPUT"
+          echo "::notice:: resolved VERSION_TAG=${VERSION_TAG}"
+
       - name: Build image
         run: |
-          docker build -t $AWS_ECR_REPO:$IMAGE_TAG .
-          docker tag $AWS_ECR_REPO:$IMAGE_TAG ${{ steps.acct.outputs.id }}.dkr.ecr.${AWS_REGION}.amazonaws.com/$AWS_ECR_REPO:$IMAGE_TAG
+          docker build -t $ECR_REPO:$IMAGE_TAG .
+
+      - name: Ensure ECR repo exists
+        env:
+          REGISTRY: ${{ steps.ecr.outputs.registry }}
+        run: |
+          set -euo pipefail
+          if ! aws ecr describe-repositories --repository-names "$ECR_REPO" --region "${AWS_REGION}" >/dev/null 2>&1; then
+            echo "Creating ECR repo: $ECR_REPO"
+            aws ecr create-repository --repository-name "$ECR_REPO" --region "${AWS_REGION}" >/dev/null
+          fi
+          echo "ECR repo ready: $ECR_REPO"
+
+      - name: Tag image for ECR
+        env:
+          REGISTRY: ${{ steps.ecr.outputs.registry }}
+        run: |
+          docker tag $ECR_REPO:$IMAGE_TAG $REGISTRY/$ECR_REPO:$IMAGE_TAG
+          docker tag $ECR_REPO:$IMAGE_TAG $REGISTRY/$ECR_REPO:${{ steps.ver.outputs.version }}
+          docker tag $ECR_REPO:$IMAGE_TAG $REGISTRY/$ECR_REPO:latest
 
       - name: Push image
+        env:
+          REGISTRY: ${{ steps.ecr.outputs.registry }}
         run: |
-          docker push ${{ steps.acct.outputs.id }}.dkr.ecr.${AWS_REGION}.amazonaws.com/$AWS_ECR_REPO:$IMAGE_TAG
+          docker push $REGISTRY/$ECR_REPO:$IMAGE_TAG
+          docker push $REGISTRY/$ECR_REPO:${{ steps.ver.outputs.version }}
+          docker push $REGISTRY/$ECR_REPO:latest
 
+      # ---- Dev 오버레이에 SHA로 PR 생성 (GitOps) ----
       - name: Checkout env overlay repo
         uses: actions/checkout@v4
         with:
@@ -54,16 +142,22 @@ jobs:
 
       - name: Update kustomize image tag (Dev)
         run: |
+          set -eu
           file="overlay/${DEV_OVERLAY_PATH}"
+          echo "Patching $file"
           sed -i -E "s#(newTag: ).*#\1${IMAGE_TAG}#g" "$file"
+          echo "Result:"
+          grep -n "newTag:" "$file" || true
 
       - name: Create PR to env-config-dev
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.ENV_REPO_PAT }}
           path: overlay
-          commit-message: "chore(dev): bump image to ${IMAGE_TAG}"
+          commit-message: "chore(dev): bump image to ${{ env.IMAGE_TAG }} (${ { steps.ver.outputs.version } })"
           branch: chore/dev-bump-${{ github.sha }}
-          title: "chore(dev): bump image to ${{ github.sha }}"
-          body: "Update dev image tag to ${{ github.sha }}"
+          title: "chore(dev): bump image to ${{ github.sha }} (also tags ${{ steps.ver.outputs.version }})"
+          body: |
+            Update Dev image tag to `${{ github.sha }}`
+            Additional tags: `${{ steps.ver.outputs.version }}`, `latest`
           base: main
