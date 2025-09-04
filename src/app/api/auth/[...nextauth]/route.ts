@@ -10,7 +10,8 @@ const handler = NextAuth({
 
       authorization: {
         params: {
-          scope: "openid",
+          scope:
+            "openid https://api.prism-memory.cloud/file.upload email profile",
           prompt: "select_account",
           identity_provider: "Google",
         },

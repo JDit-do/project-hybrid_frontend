@@ -1,24 +1,20 @@
 "use client";
-
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 
 export default function UploadTestPage() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const [file, setFile] = useState<File | null>(null);
   const [msg, setMsg] = useState("대기 중");
-
-  const apiGatewayUrl = process.env.NEXT_PUBLIC_PRESIGN_API!;
 
   const handleUpload = async () => {
     try {
       // 1) Presigned URL 요청
       setMsg("상태: Presigned URL 요청 중...");
-      const apiResponse = await fetch(apiGatewayUrl, {
+      const apiResponse = await fetch("/api/presign", {
         method: "POST",
         headers: {
           // 임시 테스트로 id_token 사용 => access_token으로 변경 예정
-          Authorization: `${session?.id_token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ fileName: file?.name }),
@@ -27,8 +23,7 @@ export default function UploadTestPage() {
         const txt = await apiResponse.text();
         throw new Error(`API Gateway 오류: ${apiResponse.status} ${txt}`);
       }
-      const data = await apiResponse.json();
-      const uploadUrl: string = data.uploadUrl;
+      const { uploadUrl } = await apiResponse.json();
       setMsg("상태: Presigned URL 수신 완료. 파일 업로드 중...");
 
       // 2) S3 업로드
@@ -56,6 +51,27 @@ export default function UploadTestPage() {
     }
   };
 
+  const handleAppSync = async () => {
+    try {
+      const response = await fetch("/api/appsync", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          query: `GraphQL 쿼리문`,
+        }),
+      });
+      const data = await response.json();
+
+      console.log("AppSync :", JSON.stringify(data, null, 2));
+      alert("AppSync Test 완료");
+    } catch (error: any) {
+      console.error("AppSync :", error);
+      alert("AppSync Test 오류");
+    }
+  };
+
   return (
     <main>
       <h1>Gateway 업로드 테스트(Presign 포함)</h1>
@@ -63,7 +79,7 @@ export default function UploadTestPage() {
       {status !== "authenticated" ? (
         <p>인증 X</p>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           <input
             type="file"
             accept="image/*,application/pdf"
@@ -90,6 +106,15 @@ export default function UploadTestPage() {
       <p style={{ marginTop: "20px", fontSize: "14px", color: "gray" }}>
         {msg}
       </p>
+
+      <div>
+        <p>AppSync 테스트 중입니다!!!!!!</p>
+        <div>
+          <button onClick={handleAppSync} style={{ border: "1px solid red" }}>
+            AppSync 가자!!! 집에... ㅋㅋ;;
+          </button>
+        </div>
+      </div>
     </main>
   );
 }
