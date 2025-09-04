@@ -26,7 +26,7 @@ const handler = NextAuth({
     signIn: "/login",
   },
   callbacks: {
-    async redirect({ url, baseUrl }) {
+    async redirect({ baseUrl }) {
       return baseUrl + "/";
     },
 

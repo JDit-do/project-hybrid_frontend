@@ -21,7 +21,7 @@ export default function UploadTestPage() {
           Authorization: `${session?.id_token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ fileName: file?.name! }),
+        body: JSON.stringify({ fileName: file?.name }),
       });
       if (!apiResponse.ok) {
         const txt = await apiResponse.text();
@@ -45,9 +45,14 @@ export default function UploadTestPage() {
       }
       setMsg(`성공: 파일 '${file?.name}' 업로드 완료!`);
       alert("파일 업로드 성공!");
-    } catch (error: any) {
-      console.error("업로드 실패:", error);
-      setMsg(`오류: ${error?.message ?? "unknown error"}`);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("업로드 실패:", error);
+        setMsg(`오류: ${error.message}`);
+      } else {
+        console.error("업로드 실패(알 수 없는 에러):", error);
+        setMsg("오류: unknown error");
+      }
     }
   };
 
