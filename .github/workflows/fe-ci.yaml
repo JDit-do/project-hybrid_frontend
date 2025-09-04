@@ -19,7 +19,6 @@ permissions:
   pull-requests: write
 
 env:
-  ECR_REPO: 
   AWS_REGION: ${{ secrets.AWS_REGION }}
   ECR_REPO: ${{ secrets.ECR_REPO }}
   IMAGE_TAG: ${{ github.sha }}
