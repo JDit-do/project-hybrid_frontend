@@ -19,11 +19,12 @@ permissions:
   pull-requests: write
 
 env:
-  AWS_REGION: ap-northeast-2
-  ECR_REPO: project-hybrid-frontend
+  ECR_REPO: 
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  ECR_REPO: ${{ secrets.ECR_REPO }}
   IMAGE_TAG: ${{ github.sha }}
-  ENV_OVERLAY_REPO: JDit-do/project-hybrid_frontend_gitops
-  DEV_OVERLAY_PATH: environments/dev/frontend/kustomization.yaml
+  ENV_OVERLAY_REPO: ${{ secrets.ENV_OVERLAY_REPO }}
+  DEV_OVERLAY_PATH: ${{ secrets.DEV_OVERLAY_PATH }}
 
 jobs:
   build-and-push:
