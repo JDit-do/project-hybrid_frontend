@@ -14,35 +14,44 @@ permissions:
   id-token: write
 
 env:
-  ENV_OVERLAY_REPO: ORG/project-hybrid_frontend_gitops
-  PROD_OVERLAY_PATH: environments/prod/frontend/kustomization.yaml
+  ENV_CONFIG_REPO: JDit-do/project-hybrid_frontend_gitops
+  PROD_VALUES_PATH: apps/values/values-prod.yaml
 
 jobs:
   promote:
     runs-on: ubuntu-latest
+    # GitHub Environments로 승인 게이트
+    environment: production
     steps:
-      - name: Checkout env overlay repo
+      - name: Checkout env_config repo
         uses: actions/checkout@v4
         with:
-          repository: ${{ env.ENV_OVERLAY_REPO }}
+          repository: ${{ env.ENV_CONFIG_REPO }}
           token: ${{ secrets.ENV_REPO_PAT }}
-          path: overlay
+          path: envcfg
 
-      - name: Update kustomize image tag (Prod)
+      - name: Install yq
         run: |
-          set -eu
-          file="overlay/${PROD_OVERLAY_PATH}"
-          sed -i -E "s#(newTag: ).*#\1${{ inputs.tag }}#g" "$file"
-          echo "Result:"
-          grep -n "newTag:" "$file" || true
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v4.44.2/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
 
-      - name: Create PR to env-config-prod
+      - name: Update values-prod.yaml (image.tag -> input tag)
+        env:
+          FILE: envcfg/${{ env.PROD_VALUES_PATH }}
+          PROMOTE_TAG: ${{ inputs.tag }}
+        run: |
+          set -euo pipefail
+          test -f "$FILE"
+          yq -i '.image.tag = strenv(PROMOTE_TAG)' "$FILE"
+          echo "Result:"; yq '.image' "$FILE"
+
+      - name: Create PR to env_config (prod)
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.ENV_REPO_PAT }}
-          path: overlay
-          commit-message: "chore(prod): promote image to ${{ inputs.tag }}"
+          path: envcfg
+          commit-message: "chore(prod): promote image.tag -> ${{ inputs.tag }}"
           branch: chore/prod-promote-${{ github.run_id }}
-          title: "chore(prod): promote image to ${{ inputs.tag }}"
-          body: "Promote image to ${{ inputs.tag }}"
+          title: "chore(prod): promote image.tag -> ${{ inputs.tag }}"
+          body: "Promote image.tag to `${{ inputs.tag }}` in ${{ env.PROD_VALUES_PATH }}"
           base: main

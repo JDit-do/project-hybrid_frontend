@@ -15,21 +15,19 @@ on:
 
 permissions:
   id-token: write
-  contents: read
+  contents: write
   pull-requests: write
 
 env:
+  # AWS 정보
   AWS_REGION: ${{ secrets.AWS_REGION }}
-  # ECR 리포지토리 이름(예: project-hybrid-frontend)
   ECR_REPO: ${{ secrets.ECR_REPO }}
   IMAGE_TAG: ${{ github.sha }}
+  ALLOW_CREATE_ECR: "false" # ECR 생성 시도
 
-  # overlay 리포(owner 자동 계산) — 필요한 경우 시크릿을 우선 사용
-  ENV_OVERLAY_REPO: ${{ secrets.ENV_OVERLAY_REPO || format('{0}/project-hybrid_frontend_gitops', github.repository_owner) }}
-  DEV_OVERLAY_PATH: ${{ secrets.DEV_OVERLAY_PATH || 'environments/dev/frontend/kustomization.yaml' }}
-
-  # ECR 생성 시도 (권한 없으면 false 권장)
-  ALLOW_CREATE_ECR: "false"
+  # overlay Repository
+  ENV_OVERLAY_REPO: ${{ secrets.ENV_OVERLAY_REPO }}
+  DEV_OVERLAY_PATH: ${{ secrets.DEV_OVERLAY_PATH }}
 
 jobs:
   build-and-push:
@@ -57,10 +55,8 @@ jobs:
           : "${ECR_REPO:?ECR_REPO empty}"
           : "${IMAGE_TAG:?IMAGE_TAG empty}"
           echo "REGISTRY=${{ steps.ecr.outputs.registry }}"
-          echo "ENV_OVERLAY_REPO=${ENV_OVERLAY_REPO}"
-          echo "DEV_OVERLAY_PATH=${DEV_OVERLAY_PATH}"
 
-      # vX.Y.Z 자동 산정 (옵션)
+      # (옵션) vX.Y.Z 산정
       - name: Resolve version tag (vX.Y.Z)
         id: ver
         env:
@@ -136,57 +132,54 @@ jobs:
           docker push $REGISTRY/$ECR_REPO:${{ steps.ver.outputs.version }}
           docker push $REGISTRY/$ECR_REPO:latest
 
-      # ---------- GitOps: env-config Dev PR ----------
-      # 포크 PR에선 시크릿이 주입되지 않으므로, 그 경우 이 블록은 skip
-      - name: Check secrets available (skip on fork PR)
-        id: secretcheck
+      # ----- GitOps: env_config 값 파일 커밋(Dev) -----
+      - name: Skip on fork PR (no secrets)
+        id: forkcheck
+        shell: bash
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ] && [ "${{ github.event.pull_request.head.repo.fork }}" = "true" ]; then
             echo "skip=true" >> $GITHUB_OUTPUT
-            echo "Fork PR: skipping overlay PR creation (no secrets)."
           else
             echo "skip=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Guard PAT
-        if: steps.secretcheck.outputs.skip == 'false'
+        if: steps.forkcheck.outputs.skip == 'false'
         run: |
           test -n "${{ secrets.ENV_REPO_PAT }}" || (echo "ENV_REPO_PAT is empty"; exit 1)
 
-      - name: Diagnose overlay access
-        if: steps.secretcheck.outputs.skip == 'false'
-        env:
-          REPO: ${{ env.ENV_OVERLAY_REPO }}
-        run: |
-          git ls-remote https://x-access-token:${{ secrets.ENV_REPO_PAT }}@github.com/${REPO} HEAD
-
-      - name: Checkout env overlay repo
-        if: steps.secretcheck.outputs.skip == 'false'
+      - name: Checkout env_config repo
+        if: steps.forkcheck.outputs.skip == 'false'
         uses: actions/checkout@v4
         with:
-          repository: ${{ env.ENV_OVERLAY_REPO }}
+          repository: ${{ env.ENV_CONFIG_REPO }}
           token: ${{ secrets.ENV_REPO_PAT }}
-          path: overlay
+          path: envcfg
 
-      - name: Update kustomize image tag (Dev)
-        if: steps.secretcheck.outputs.skip == 'false'
+      - name: Install yq
+        if: steps.forkcheck.outputs.skip == 'false'
         run: |
-          set -eu
-          file="overlay/${DEV_OVERLAY_PATH}"
-          echo "Patching $file"
-          sed -i -E "s#(newTag: ).*#\1${IMAGE_TAG}#g" "$file"
-          grep -n "newTag:" "$file" || true
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v4.44.2/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+          yq --version
 
-      - name: Create PR to env-config-dev
-        if: steps.secretcheck.outputs.skip == 'false'
-        uses: peter-evans/create-pull-request@v6
-        with:
-          token: ${{ secrets.ENV_REPO_PAT }}
-          path: overlay
-          base: main
-          branch: chore/dev-bump-${{ github.sha }}
-          title: "chore(dev): bump image to ${{ github.sha }} (also ${{ steps.ver.outputs.version }})"
-          commit-message: "chore(dev): bump image to ${{ env.IMAGE_TAG }} (${{ steps.ver.outputs.version }})"
-          body: |
-            Update Dev image tag to `${{ github.sha }}`
-            Additional tags: `${{ steps.ver.outputs.version }}`, `latest`
+      - name: Update values-dev.yaml (image.tag -> SHA)
+        if: steps.forkcheck.outputs.skip == 'false'
+        env:
+          FILE: envcfg/${{ env.DEV_VALUES_PATH }}
+        run: |
+          set -euo pipefail
+          test -f "$FILE"
+          yq -i '.image.tag = strenv(IMAGE_TAG)' "$FILE"
+          echo "Updated:"
+          yq '.image' "$FILE"
+
+      - name: Commit & push to main (Dev auto)
+        if: steps.forkcheck.outputs.skip == 'false'
+        working-directory: envcfg
+        run: |
+          git config user.name  "ci-bot"
+          git config user.email "ci-bot@example.com"
+          git add "${{ env.DEV_VALUES_PATH }}"
+          git commit -m "chore(dev): image.tag -> ${IMAGE_TAG} (also ${{ steps.ver.outputs.version }})" || exit 0
+          git push origin HEAD:main
