@@ -25,9 +25,9 @@ env:
   IMAGE_TAG: ${{ github.sha }}
   ALLOW_CREATE_ECR: "false" # ECR 생성 시도
 
-  # overlay Repository
-  ENV_OVERLAY_REPO: ${{ secrets.ENV_OVERLAY_REPO }}
-  DEV_OVERLAY_PATH: ${{ secrets.DEV_OVERLAY_PATH }}
+  # Repo 정보
+  ENV_CONFIG_REPO: ${{ secrets.ENV_CONFIG_REPO }}
+  DEV_VALUES_PATH: ${{ secrets.DEV_VALUES_PATH }}
 
 jobs:
   build-and-push:
