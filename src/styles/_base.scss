@@ -1,0 +1,507 @@
+// Base Styles
+// 기본 스타일 및 리셋
+
+// Reset and Base Styles
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  line-height: $line-height-normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: $font-family-sans;
+  font-size: $font-size-base;
+  font-weight: $font-weight-normal;
+  color: $foreground;
+  background-color: $background;
+  transition: background-color $transition-normal, color $transition-normal;
+  min-height: 100vh;
+  
+  @media (prefers-color-scheme: dark) {
+    color: $dark-foreground;
+    background-color: $dark-background;
+  }
+  
+  .dark & {
+    color: $dark-foreground;
+    background-color: $dark-background;
+  }
+}
+
+// Typography
+h1, h2, h3, h4, h5, h6 {
+  font-weight: $font-weight-semibold;
+  line-height: $line-height-tight;
+  color: $foreground;
+  letter-spacing: $letter-spacing-tight;
+  margin: 0;
+  
+  @media (prefers-color-scheme: dark) {
+    color: $dark-foreground;
+  }
+  
+  .dark & {
+    color: $dark-foreground;
+  }
+}
+
+h1 {
+  font-size: $font-size-4xl;
+  font-weight: $font-weight-bold;
+  @include gradient-text($gradient-primary);
+  
+  @include mobile {
+    font-size: $font-size-3xl;
+  }
+}
+
+h2 {
+  font-size: $font-size-3xl;
+  font-weight: $font-weight-semibold;
+  
+  @include mobile {
+    font-size: $font-size-2xl;
+  }
+}
+
+h3 {
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-semibold;
+  
+  @include mobile {
+    font-size: $font-size-xl;
+  }
+}
+
+h4 {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-medium;
+}
+
+h5 {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-medium;
+}
+
+h6 {
+  font-size: $font-size-base;
+  font-weight: $font-weight-medium;
+}
+
+p {
+  margin-bottom: $spacing-4;
+  line-height: $line-height-relaxed;
+  color: $muted-foreground;
+  
+  @media (prefers-color-scheme: dark) {
+    color: $dark-muted-foreground;
+  }
+  
+  .dark & {
+    color: $dark-muted-foreground;
+  }
+}
+
+a {
+  color: $primary-600;
+  text-decoration: none;
+  transition: color $transition-fast;
+  position: relative;
+  
+  &:hover {
+    color: $primary-700;
+    text-decoration: none;
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: $gradient-primary;
+    transition: width $transition-normal;
+  }
+  
+  &:hover::after {
+    width: 100%;
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    color: $primary-400;
+    
+    &:hover {
+      color: $primary-300;
+    }
+  }
+  
+  .dark & {
+    color: $primary-400;
+    
+    &:hover {
+      color: $primary-300;
+    }
+  }
+}
+
+// Lists
+ul, ol {
+  margin-bottom: $spacing-4;
+  padding-left: $spacing-6;
+}
+
+li {
+  margin-bottom: $spacing-2;
+  line-height: $line-height-relaxed;
+}
+
+// Images
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border-radius: $border-radius-lg;
+}
+
+// Form Elements
+input, textarea, select {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  @include input-base;
+}
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: $border-radius-lg;
+  font-weight: $font-weight-medium;
+  transition: all $transition-normal;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  font-size: $font-size-sm;
+  line-height: $line-height-none;
+}
+
+// Focus Styles
+:focus-visible {
+  outline: 2px solid $ring;
+  outline-offset: 2px;
+  border-radius: $border-radius-base;
+}
+
+// Selection Styles
+::selection {
+  background: rgba($primary-500, 0.2);
+  color: $foreground;
+}
+
+@media (prefers-color-scheme: dark) {
+  ::selection {
+    background: rgba($primary-400, 0.3);
+    color: $dark-foreground;
+  }
+}
+
+.dark ::selection {
+  background: rgba($primary-400, 0.3);
+  color: $dark-foreground;
+}
+
+// Scrollbar Styles
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: $muted;
+  
+  @media (prefers-color-scheme: dark) {
+    background: $dark-muted;
+  }
+  
+  .dark & {
+    background: $dark-muted;
+  }
+}
+
+::-webkit-scrollbar-thumb {
+  background: $border;
+  border-radius: $border-radius-base;
+  transition: background $transition-fast;
+  
+  &:hover {
+    background: $muted-foreground;
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    background: $dark-border;
+    
+    &:hover {
+      background: $dark-muted-foreground;
+    }
+  }
+  
+  .dark & {
+    background: $dark-border;
+    
+    &:hover {
+      background: $dark-muted-foreground;
+    }
+  }
+}
+
+// Utility Classes
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 $spacing-4;
+  
+  @include mobile {
+    padding: 0 $spacing-3;
+  }
+}
+
+.section {
+  padding: $spacing-16 0;
+  
+  @include mobile {
+    padding: $spacing-12 0;
+  }
+}
+
+// Loading States
+.loading {
+  @include loading-spinner;
+  width: 20px;
+  height: 20px;
+  border: 2px solid $border;
+  border-top: 2px solid $primary-500;
+  border-radius: 50%;
+}
+
+.loading-pulse {
+  @include loading-pulse;
+}
+
+.loading-bounce {
+  @include loading-bounce;
+}
+
+.loading-shimmer {
+  @include loading-shimmer;
+}
+
+// Interactive Elements
+.interactive {
+  @include interactive;
+}
+
+.interactive-scale {
+  @include interactive-scale;
+}
+
+.interactive-glow {
+  @include interactive-glow;
+}
+
+// Glass Effect
+.glass {
+  @include glass;
+  
+  @media (prefers-color-scheme: dark) {
+    @include glass-dark;
+  }
+  
+  .dark & {
+    @include glass-dark;
+  }
+}
+
+// Gradient Text
+.gradient-text {
+  @include gradient-text;
+}
+
+.gradient-text-secondary {
+  @include gradient-text($gradient-secondary);
+}
+
+.gradient-text-accent {
+  @include gradient-text($gradient-accent);
+}
+
+// Glow Effects
+.glow {
+  @include glow;
+}
+
+.glow-primary {
+  @include glow($primary-500);
+}
+
+.glow-secondary {
+  @include glow($secondary-500);
+}
+
+.glow-accent {
+  @include glow($accent-500);
+}
+
+// Animation Classes
+.animate-fade-in {
+  @include animate-fade-in;
+}
+
+.animate-slide-up {
+  @include animate-slide-up;
+}
+
+.animate-slide-down {
+  @include animate-slide-down;
+}
+
+.animate-scale-in {
+  @include animate-scale-in;
+}
+
+.animate-float {
+  @include animate-float;
+}
+
+// Responsive Utilities
+.hidden-mobile {
+  @include mobile {
+    display: none !important;
+  }
+}
+
+.hidden-desktop {
+  @include desktop {
+    display: none !important;
+  }
+}
+
+.visible-mobile {
+  display: none !important;
+  
+  @include mobile {
+    display: block !important;
+  }
+}
+
+.visible-desktop {
+  display: block !important;
+  
+  @include mobile {
+    display: none !important;
+  }
+}
+
+// Spacing Utilities
+.m-0 { margin: 0; }
+.m-1 { margin: $spacing-1; }
+.m-2 { margin: $spacing-2; }
+.m-3 { margin: $spacing-3; }
+.m-4 { margin: $spacing-4; }
+.m-6 { margin: $spacing-6; }
+.m-8 { margin: $spacing-8; }
+
+.p-0 { padding: 0; }
+.p-1 { padding: $spacing-1; }
+.p-2 { padding: $spacing-2; }
+.p-3 { padding: $spacing-3; }
+.p-4 { padding: $spacing-4; }
+.p-6 { padding: $spacing-6; }
+.p-8 { padding: $spacing-8; }
+
+// Text Utilities
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+.text-xs { font-size: $font-size-xs; }
+.text-sm { font-size: $font-size-sm; }
+.text-base { font-size: $font-size-base; }
+.text-lg { font-size: $font-size-lg; }
+.text-xl { font-size: $font-size-xl; }
+.text-2xl { font-size: $font-size-2xl; }
+
+.font-thin { font-weight: $font-weight-thin; }
+.font-light { font-weight: $font-weight-light; }
+.font-normal { font-weight: $font-weight-normal; }
+.font-medium { font-weight: $font-weight-medium; }
+.font-semibold { font-weight: $font-weight-semibold; }
+.font-bold { font-weight: $font-weight-bold; }
+
+// Color Utilities
+.text-primary { color: $primary-600; }
+.text-secondary { color: $secondary-600; }
+.text-accent { color: $accent-600; }
+.text-success { color: $success-600; }
+.text-warning { color: $warning-600; }
+.text-error { color: $error-600; }
+.text-muted { color: $muted-foreground; }
+
+.bg-primary { background-color: $primary-600; }
+.bg-secondary { background-color: $secondary-600; }
+.bg-accent { background-color: $accent-600; }
+.bg-success { background-color: $success-600; }
+.bg-warning { background-color: $warning-600; }
+.bg-error { background-color: $error-600; }
+.bg-muted { background-color: $muted; }
+
+// Border Utilities
+.border { border: 1px solid $border; }
+.border-primary { border: 1px solid $primary-600; }
+.border-secondary { border: 1px solid $secondary-600; }
+.border-accent { border: 1px solid $accent-600; }
+
+.rounded { border-radius: $border-radius-base; }
+.rounded-md { border-radius: $border-radius-md; }
+.rounded-lg { border-radius: $border-radius-lg; }
+.rounded-xl { border-radius: $border-radius-xl; }
+.rounded-full { border-radius: $border-radius-full; }
+
+// Shadow Utilities
+.shadow-sm { box-shadow: $shadow-sm; }
+.shadow-md { box-shadow: $shadow-md; }
+.shadow-lg { box-shadow: $shadow-lg; }
+.shadow-xl { box-shadow: $shadow-xl; }
+
+// Transition Utilities
+.transition { transition: all $transition-normal; }
+.transition-fast { transition: all $transition-fast; }
+.transition-slow { transition: all $transition-slow; }

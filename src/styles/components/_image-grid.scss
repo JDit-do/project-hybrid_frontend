@@ -1,0 +1,534 @@
+// Modern Image Grid Component
+// 현대적이고 인터랙티브한 이미지 그리드 컴포넌트
+
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: $spacing-6;
+  padding: $spacing-4 0;
+  
+  @include tablet {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: $spacing-5;
+  }
+  
+  @include mobile {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: $spacing-4;
+  }
+}
+
+.image-list {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-4;
+  padding: $spacing-4 0;
+}
+
+.image-item {
+  cursor: pointer;
+  transition: all $transition-normal;
+  border-radius: $border-radius-xl;
+  overflow: hidden;
+  position: relative;
+  
+  &:hover {
+    transform: translateY(-6px);
+    box-shadow: $shadow-xl;
+  }
+  
+  // Loading State
+  &--loading {
+    @include loading-shimmer;
+    min-height: 200px;
+    border-radius: $border-radius-xl;
+  }
+}
+
+// Grid View Styles
+.image-card {
+  @include card-elevated;
+  overflow: hidden;
+  position: relative;
+  
+  &:hover {
+    transform: translateY(-6px);
+    box-shadow: $shadow-xl;
+    border-color: $primary-200;
+  }
+}
+
+.image-container {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: $muted;
+  
+  @media (prefers-color-scheme: dark) {
+    background: $dark-muted;
+  }
+  
+  .dark & {
+    background: $dark-muted;
+  }
+}
+
+.image-thumbnail {
+  object-fit: cover;
+  transition: transform $transition-slow;
+  width: 100%;
+  height: 100%;
+  
+  .image-item:hover & {
+    transform: scale(1.1);
+  }
+}
+
+.image-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: $spacing-6;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+  color: white;
+  transform: translateY(100%);
+  transition: transform $transition-normal;
+  
+  .image-item:hover & {
+    transform: translateY(0);
+  }
+  
+  @include mobile {
+    padding: $spacing-4;
+  }
+}
+
+.image-title {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  margin-bottom: $spacing-2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: white;
+  
+  @include mobile {
+    font-size: $font-size-base;
+  }
+}
+
+.image-date {
+  font-size: $font-size-sm;
+  opacity: 0.9;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.image-card-content {
+  padding: $spacing-6;
+  background: $background;
+  
+  @media (prefers-color-scheme: dark) {
+    background: $dark-background;
+  }
+  
+  .dark & {
+    background: $dark-background;
+  }
+  
+  @include mobile {
+    padding: $spacing-4;
+  }
+}
+
+.image-card-title {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $foreground;
+  margin-bottom: $spacing-2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  
+  @media (prefers-color-scheme: dark) {
+    color: $dark-foreground;
+  }
+  
+  .dark & {
+    color: $dark-foreground;
+  }
+  
+  @include mobile {
+    font-size: $font-size-base;
+  }
+}
+
+.image-card-date {
+  font-size: $font-size-sm;
+  color: $muted-foreground;
+  
+  @media (prefers-color-scheme: dark) {
+    color: $dark-muted-foreground;
+  }
+  
+  .dark & {
+    color: $dark-muted-foreground;
+  }
+}
+
+// List View Styles
+.image-list-item {
+  @include card-base;
+  display: flex;
+  align-items: center;
+  gap: $spacing-6;
+  padding: $spacing-6;
+  
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: $shadow-lg;
+    border-color: $primary-200;
+  }
+  
+  @include mobile {
+    gap: $spacing-4;
+    padding: $spacing-4;
+  }
+}
+
+.image-list-thumbnail {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: $muted;
+  
+  @media (prefers-color-scheme: dark) {
+    background: $dark-muted;
+  }
+  
+  .dark & {
+    background: $dark-muted;
+  }
+  
+  @include mobile {
+    width: 80px;
+    height: 80px;
+  }
+}
+
+.image-list-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.image-list-title {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $foreground;
+  margin-bottom: $spacing-2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  
+  @media (prefers-color-scheme: dark) {
+    color: $dark-foreground;
+  }
+  
+  .dark & {
+    color: $dark-foreground;
+  }
+  
+  @include mobile {
+    font-size: $font-size-base;
+  }
+}
+
+.image-list-description {
+  font-size: $font-size-sm;
+  color: $muted-foreground;
+  margin-bottom: $spacing-2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  
+  @media (prefers-color-scheme: dark) {
+    color: $dark-muted-foreground;
+  }
+  
+  .dark & {
+    color: $dark-muted-foreground;
+  }
+}
+
+.image-list-date {
+  font-size: $font-size-xs;
+  color: $muted-foreground;
+  
+  @media (prefers-color-scheme: dark) {
+    color: $dark-muted-foreground;
+  }
+  
+  .dark & {
+    color: $dark-muted-foreground;
+  }
+}
+
+// Image Actions
+.image-actions {
+  position: absolute;
+  top: $spacing-3;
+  right: $spacing-3;
+  display: flex;
+  gap: $spacing-2;
+  opacity: 0;
+  transition: opacity $transition-normal;
+  
+  .image-item:hover & {
+    opacity: 1;
+  }
+}
+
+.image-action {
+  @include flex-center;
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: $border-radius-full;
+  border: none;
+  cursor: pointer;
+  transition: all $transition-fast;
+  backdrop-filter: blur(10px);
+  
+  &:hover {
+    background: white;
+    transform: scale(1.1);
+  }
+  
+  svg {
+    width: 16px;
+    height: 16px;
+    color: $secondary-700;
+  }
+}
+
+// Image Badge
+.image-badge {
+  position: absolute;
+  top: $spacing-3;
+  left: $spacing-3;
+  background: $gradient-primary;
+  color: white;
+  padding: $spacing-1 $spacing-2;
+  border-radius: $border-radius-full;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  z-index: 10;
+}
+
+// Image Loading States
+.image-loading {
+  @include loading-shimmer;
+  border-radius: $border-radius-xl;
+}
+
+.image-skeleton {
+  background: $muted;
+  border-radius: $border-radius-xl;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  
+  @media (prefers-color-scheme: dark) {
+    background: $dark-muted;
+  }
+  
+  .dark & {
+    background: $dark-muted;
+  }
+}
+
+// Image Grid Variants
+.image-grid {
+  &--masonry {
+    column-count: 3;
+    column-gap: $spacing-6;
+    
+    .image-item {
+      break-inside: avoid;
+      margin-bottom: $spacing-6;
+    }
+    
+    @include tablet {
+      column-count: 2;
+    }
+    
+    @include mobile {
+      column-count: 1;
+    }
+  }
+  
+  &--compact {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: $spacing-4;
+    
+    .image-container {
+      aspect-ratio: 4/3;
+    }
+  }
+  
+  &--wide {
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: $spacing-8;
+    
+    @include mobile {
+      grid-template-columns: 1fr;
+      gap: $spacing-6;
+    }
+  }
+}
+
+// Image Hover Effects
+.image-item {
+  &--float {
+    &:hover {
+      animation: float 3s ease-in-out infinite;
+    }
+  }
+  
+  &--glow {
+    &:hover {
+      box-shadow: $shadow-glow-primary;
+    }
+  }
+  
+  &--scale {
+    &:hover {
+      transform: scale(1.02);
+    }
+  }
+  
+  &--rotate {
+    &:hover {
+      transform: rotate(2deg);
+    }
+  }
+}
+
+// Image States
+.image-item {
+  &--selected {
+    border: 2px solid $primary-500;
+    box-shadow: $shadow-glow-primary;
+  }
+  
+  &--loading {
+    opacity: 0.7;
+    pointer-events: none;
+  }
+  
+  &--error {
+    border: 2px solid $error-500;
+    background: rgba($error-500, 0.05);
+  }
+}
+
+// Image Animations
+@keyframes image-enter {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.image-item {
+  animation: image-enter $transition-normal ease-out;
+}
+
+// Image Responsive Design
+@include mobile {
+  .image-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: $spacing-3;
+  }
+  
+  .image-list-item {
+    flex-direction: column;
+    text-align: center;
+    
+    .image-list-thumbnail {
+      width: 100%;
+      height: 200px;
+    }
+  }
+  
+  .image-overlay {
+    padding: $spacing-3;
+  }
+  
+  .image-actions {
+    top: $spacing-2;
+    right: $spacing-2;
+  }
+}
+
+// Dark Mode Adjustments
+@media (prefers-color-scheme: dark) {
+  .image-action {
+    background: rgba(0, 0, 0, 0.7);
+    
+    &:hover {
+      background: rgba(0, 0, 0, 0.9);
+    }
+    
+    svg {
+      color: white;
+    }
+  }
+}
+
+.dark .image-action {
+  background: rgba(0, 0, 0, 0.7);
+  
+  &:hover {
+    background: rgba(0, 0, 0, 0.9);
+  }
+  
+  svg {
+    color: white;
+  }
+}
+
+// Accessibility
+.image-item {
+  &:focus-visible {
+    outline: 2px solid $ring;
+    outline-offset: 2px;
+  }
+  
+  // High contrast mode support
+  @media (prefers-contrast: high) {
+    border: 2px solid currentColor;
+  }
+  
+  // Reduced motion support
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+    
+    &:hover {
+      transform: none;
+    }
+    
+    .image-thumbnail {
+      transition: none;
+      
+      &:hover {
+        transform: none;
+      }
+    }
+  }
+}
