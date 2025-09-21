@@ -106,15 +106,21 @@ export class UploadService {
 
   // Get presigned URL
   private async getPresignedUrl(file: File): Promise<{ uploadUrl: string; key: string }> {
+    // UI 테스트를 위해 API 호출 주석 처리
+    console.log('UploadService.getPresignedUrl - UI 테스트용 Mock 응답');
+    throw new Error('Upload API is disabled for UI testing');
+
+    /*
     const response = await fetch('/api/presign', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        filename: file.name,
+        fileName: file.name,
         contentType: file.type,
       }),
+      credentials: 'include',
     });
 
     if (!response.ok) {
@@ -122,11 +128,28 @@ export class UploadService {
     }
 
     return response.json();
+    */
   }
 
   // Upload single file
   private async uploadSingleFile(upload: UploadProgress): Promise<boolean> {
     try {
+      // UI 테스트를 위해 API 호출 주석 처리
+      console.log('UploadService.uploadSingleFile - UI 테스트용 Mock 응답');
+      
+      // Mock 업로드 시뮬레이션
+      this.updateUploadProgress(upload.id, 10);
+      await new Promise(resolve => setTimeout(resolve, 500)); // 0.5초 지연
+      
+      this.updateUploadProgress(upload.id, 50);
+      await new Promise(resolve => setTimeout(resolve, 500)); // 0.5초 지연
+      
+      this.updateUploadProgress(upload.id, 100);
+      this.updateUploadStatus(upload.id, 'success', 100);
+      
+      return true;
+
+      /*
       // Update progress to 10%
       this.updateUploadProgress(upload.id, 10);
 
@@ -153,6 +176,7 @@ export class UploadService {
       this.updateUploadStatus(upload.id, 'success', 100);
 
       return true;
+      */
     } catch (error) {
       console.error('Upload error:', error);
       this.updateUploadStatus(

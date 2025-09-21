@@ -1,11 +1,21 @@
-import { Image, ImageFilters, ImagePagination } from '@/entities/image/model/types';
-import { getImages, getImage, updateImage, deleteImage } from '@/entities/image/api/imageApi';
+import {
+  Image,
+  ImageFilters,
+  ImagePagination,
+} from "@/entities/image/model/types";
+import {
+  getAllImage, // Test - 제거 예정
+  getImages,
+  getImage,
+  updateImage,
+  deleteImage,
+} from "@/entities/image/api/imageApi";
 
 export interface GalleryState {
   images: Image[];
   loading: boolean;
   hasMore: boolean;
-  viewMode: 'grid' | 'list';
+  viewMode: "grid" | "list";
   selectedImage: Image | null;
   isInitialLoad: boolean;
   currentPage: number;
@@ -34,7 +44,7 @@ export class GalleryService {
       images: [],
       loading: false,
       hasMore: true,
-      viewMode: 'grid',
+      viewMode: "grid",
       selectedImage: null,
       isInitialLoad: true,
       currentPage: 0,
@@ -50,7 +60,7 @@ export class GalleryService {
   }
 
   private notifyObservers(): void {
-    this.observers.forEach(observer => observer(this.state));
+    this.observers.forEach((observer) => observer(this.state));
   }
 
   // Observer pattern for React integration
@@ -80,7 +90,7 @@ export class GalleryService {
     this.clearLoadingTimeout();
     this.loadingTimeout = setTimeout(() => {
       if (this.state.loading) {
-        this.handleError(new Error('요청 시간이 초과되었습니다.'));
+        this.handleError(new Error("요청 시간이 초과되었습니다."));
       }
     }, 10000);
   }
@@ -94,11 +104,11 @@ export class GalleryService {
 
   // Error handling
   private handleError(error: Error): void {
-    console.error('Gallery error:', error);
-    this.setState({ 
-      error, 
+    console.error("Gallery error:", error);
+    this.setState({
+      error,
       loading: false,
-      retryCount: this.state.retryCount + 1 
+      retryCount: this.state.retryCount + 1,
     });
     this.clearLoadingTimeout();
   }
@@ -106,7 +116,9 @@ export class GalleryService {
   // Retry logic
   async retry(): Promise<void> {
     if (this.state.retryCount < this.options.maxRetries) {
-      console.log(`Retrying gallery load (${this.state.retryCount}/${this.options.maxRetries})`);
+      console.log(
+        `Retrying gallery load (${this.state.retryCount}/${this.options.maxRetries})`
+      );
       await this.loadImages(true);
     }
   }
@@ -124,11 +136,42 @@ export class GalleryService {
     this.setLoadingTimeout();
 
     try {
+      // UI 테스트를 위해 API 호출 주석 처리
+      console.log('GalleryService.loadImages - UI 테스트용 Mock 응답');
+      
+      // Mock 데이터로 대체
+      const mockResult = {
+        images: [],
+        pagination: { hasMore: false }
+      };
+
+      this.clearLoadingTimeout();
+
+      if (reset) {
+        this.setState({
+          images: mockResult.images,
+          currentPage: 0,
+          isInitialLoad: false,
+        });
+      } else {
+        this.setState({
+          images: [...this.state.images, ...mockResult.images],
+        });
+      }
+
+      this.setState({
+        hasMore: mockResult.pagination.hasMore,
+        currentPage: reset ? 1 : this.state.currentPage + 1,
+        loading: false,
+      });
+
+      /*
       const page = reset ? 0 : this.state.currentPage;
-      const result = await getImages(
-        { sortBy: 'newest' }, 
-        { page, limit: this.options.pageSize }
-      );
+      const result = await getAllImage();
+      // const result = await getImages(
+      //   { sortBy: 'newest' },
+      //   { page, limit: this.options.pageSize }
+      // );
 
       this.clearLoadingTimeout();
 
@@ -149,7 +192,7 @@ export class GalleryService {
         currentPage: page + 1,
         loading: false,
       });
-
+      */
     } catch (error) {
       this.handleError(error as Error);
     }
@@ -168,7 +211,7 @@ export class GalleryService {
   }
 
   // View mode
-  changeViewMode(mode: 'grid' | 'list'): void {
+  changeViewMode(mode: "grid" | "list"): void {
     this.setState({ viewMode: mode });
   }
 
@@ -180,15 +223,32 @@ export class GalleryService {
   // Delete image
   async deleteImage(imageId: string): Promise<void> {
     try {
-      await deleteImage(imageId);
-      const updatedImages = this.state.images.filter(img => img.id !== imageId);
-      this.setState({ images: updatedImages });
+      // UI 테스트를 위해 API 호출 주석 처리
+      console.log('GalleryService.deleteImage - UI 테스트용 Mock 응답');
       
+      // Mock 삭제 로직
+      const updatedImages = this.state.images.filter(
+        (img) => img.id !== imageId
+      );
+      this.setState({ images: updatedImages });
+
       if (this.state.selectedImage?.id === imageId) {
         this.setState({ selectedImage: null });
       }
+
+      /*
+      await deleteImage(imageId);
+      const updatedImages = this.state.images.filter(
+        (img) => img.id !== imageId
+      );
+      this.setState({ images: updatedImages });
+
+      if (this.state.selectedImage?.id === imageId) {
+        this.setState({ selectedImage: null });
+      }
+      */
     } catch (error) {
-      console.error('Failed to delete image:', error);
+      console.error("Failed to delete image:", error);
       this.handleError(error as Error);
     }
   }
@@ -196,17 +256,33 @@ export class GalleryService {
   // Update image
   async updateImage(imageId: string, updates: Partial<Image>): Promise<void> {
     try {
-      const updatedImage = await updateImage(imageId, updates);
-      const updatedImages = this.state.images.map(img => 
+      // UI 테스트를 위해 API 호출 주석 처리
+      console.log('GalleryService.updateImage - UI 테스트용 Mock 응답');
+      
+      // Mock 업데이트 로직
+      const updatedImage = { ...this.state.images.find(img => img.id === imageId), ...updates } as Image;
+      const updatedImages = this.state.images.map((img) =>
         img.id === imageId ? updatedImage : img
       );
       this.setState({ images: updatedImages });
-      
+
       if (this.state.selectedImage?.id === imageId) {
         this.setState({ selectedImage: updatedImage });
       }
+
+      /*
+      const updatedImage = await updateImage(imageId, updates);
+      const updatedImages = this.state.images.map((img) =>
+        img.id === imageId ? updatedImage : img
+      );
+      this.setState({ images: updatedImages });
+
+      if (this.state.selectedImage?.id === imageId) {
+        this.setState({ selectedImage: updatedImage });
+      }
+      */
     } catch (error) {
-      console.error('Failed to update image:', error);
+      console.error("Failed to update image:", error);
       this.handleError(error as Error);
     }
   }
@@ -214,9 +290,15 @@ export class GalleryService {
   // Get single image
   async getImage(imageId: string): Promise<Image | null> {
     try {
+      // UI 테스트를 위해 API 호출 주석 처리
+      console.log('GalleryService.getImage - UI 테스트용 Mock 응답');
+      return null;
+
+      /*
       return await getImage(imageId);
+      */
     } catch (error) {
-      console.error('Failed to get image:', error);
+      console.error("Failed to get image:", error);
       this.handleError(error as Error);
       return null;
     }

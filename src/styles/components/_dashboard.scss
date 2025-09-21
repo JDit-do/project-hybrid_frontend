@@ -1,0 +1,474 @@
+// Dashboard Component
+// 현대적이고 인터랙티브한 대시보드 컴포넌트
+
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-8;
+  max-width: 1400px;
+  margin: 0 auto;
+  
+  @include mobile {
+    gap: $spacing-6;
+  }
+}
+
+.dashboard__welcome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-8;
+  background: $gradient-primary;
+  border-radius: $border-radius-2xl;
+  color: white;
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 200px;
+    height: 200px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    transform: translate(50%, -50%);
+  }
+  
+  @include mobile {
+    flex-direction: column;
+    gap: $spacing-4;
+    text-align: center;
+    padding: $spacing-6;
+  }
+}
+
+.dashboard__welcome-content {
+  position: relative;
+  z-index: 10;
+}
+
+.dashboard__welcome-title {
+  font-size: $font-size-3xl;
+  font-weight: $font-weight-bold;
+  margin-bottom: $spacing-2;
+  
+  @include mobile {
+    font-size: $font-size-2xl;
+  }
+}
+
+.dashboard__welcome-subtitle {
+  font-size: $font-size-lg;
+  opacity: 0.9;
+  
+  @include mobile {
+    font-size: $font-size-base;
+  }
+}
+
+.dashboard__upload-cta {
+  @include flex-center;
+  gap: $spacing-2;
+  padding: $spacing-4 $spacing-6;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: $border-radius-xl;
+  color: white;
+  font-weight: $font-weight-semibold;
+  cursor: pointer;
+  transition: all $transition-normal;
+  backdrop-filter: blur(10px);
+  position: relative;
+  z-index: 10;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+  }
+  
+  @include mobile {
+    padding: $spacing-3 $spacing-4;
+    font-size: $font-size-sm;
+  }
+}
+
+.dashboard__stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: $spacing-6;
+  
+  @include mobile {
+    grid-template-columns: repeat(2, 1fr);
+    gap: $spacing-4;
+  }
+}
+
+.dashboard__stat-card {
+  border: 1px solid $border;
+  box-shadow: $shadow-sm;
+  transition: all $transition-normal;
+  
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: $shadow-lg;
+    border-color: $primary-200;
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    border-color: $dark-border;
+    
+    &:hover {
+      border-color: $primary-400;
+    }
+  }
+  
+  .dark & {
+    border-color: $dark-border;
+    
+    &:hover {
+      border-color: $primary-400;
+    }
+  }
+}
+
+.dashboard__stat-content {
+  display: flex;
+  align-items: center;
+  gap: $spacing-4;
+  padding: $spacing-6;
+}
+
+.dashboard__stat-icon {
+  @include flex-center;
+  width: 48px;
+  height: 48px;
+  border-radius: $border-radius-xl;
+  color: white;
+  
+  &--blue {
+    background: $gradient-primary;
+  }
+  
+  &--green {
+    background: linear-gradient(135deg, $success-500, $success-600);
+  }
+  
+  &--red {
+    background: linear-gradient(135deg, $error-500, $error-600);
+  }
+  
+  &--purple {
+    background: linear-gradient(135deg, $secondary-500, $secondary-600);
+  }
+}
+
+.dashboard__stat-info {
+  flex: 1;
+}
+
+.dashboard__stat-value {
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  color: $foreground;
+  margin-bottom: $spacing-1;
+  
+  @media (prefers-color-scheme: dark) {
+    color: $dark-foreground;
+  }
+  
+  .dark & {
+    color: $dark-foreground;
+  }
+}
+
+.dashboard__stat-label {
+  font-size: $font-size-sm;
+  color: $muted-foreground;
+  font-weight: $font-weight-medium;
+  
+  @media (prefers-color-scheme: dark) {
+    color: $dark-muted-foreground;
+  }
+  
+  .dark & {
+    color: $dark-muted-foreground;
+  }
+}
+
+.dashboard__recent {
+  .card {
+    border: 1px solid $border;
+    box-shadow: $shadow-sm;
+    
+    @media (prefers-color-scheme: dark) {
+      border-color: $dark-border;
+    }
+    
+    .dark & {
+      border-color: $dark-border;
+    }
+  }
+}
+
+.dashboard__recent-title {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  color: $foreground;
+  
+  @media (prefers-color-scheme: dark) {
+    color: $dark-foreground;
+  }
+  
+  .dark & {
+    color: $dark-foreground;
+  }
+}
+
+.dashboard__recent-list {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-4;
+}
+
+.dashboard__recent-item {
+  display: flex;
+  align-items: center;
+  gap: $spacing-4;
+  padding: $spacing-3;
+  border-radius: $border-radius-lg;
+  cursor: pointer;
+  transition: all $transition-normal;
+  
+  &:hover {
+    background: $muted;
+    transform: translateX(4px);
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    &:hover {
+      background: $dark-muted;
+    }
+  }
+  
+  .dark & {
+    &:hover {
+      background: $dark-muted;
+    }
+  }
+}
+
+.dashboard__recent-image {
+  width: 60px;
+  height: 60px;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  background: $muted;
+  flex-shrink: 0;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    background: $dark-muted;
+  }
+  
+  .dark & {
+    background: $dark-muted;
+  }
+}
+
+.dashboard__recent-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.dashboard__recent-item-title {
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  color: $foreground;
+  margin-bottom: $spacing-1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  
+  @media (prefers-color-scheme: dark) {
+    color: $dark-foreground;
+  }
+  
+  .dark & {
+    color: $dark-foreground;
+  }
+}
+
+.dashboard__recent-item-date {
+  display: flex;
+  align-items: center;
+  gap: $spacing-1;
+  font-size: $font-size-sm;
+  color: $muted-foreground;
+  
+  @media (prefers-color-scheme: dark) {
+    color: $dark-muted-foreground;
+  }
+  
+  .dark & {
+    color: $dark-muted-foreground;
+  }
+}
+
+.dashboard__gallery {
+  .card {
+    border: 1px solid $border;
+    box-shadow: $shadow-sm;
+    
+    @media (prefers-color-scheme: dark) {
+      border-color: $dark-border;
+    }
+    
+    .dark & {
+      border-color: $dark-border;
+    }
+  }
+}
+
+.dashboard__gallery-title {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  color: $foreground;
+  
+  @media (prefers-color-scheme: dark) {
+    color: $dark-foreground;
+  }
+  
+  .dark & {
+    color: $dark-foreground;
+  }
+}
+
+.dashboard__gallery-content {
+  .gallery {
+    padding: 0;
+    background: transparent;
+  }
+  
+  .gallery__content {
+    .image-grid {
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: $spacing-4;
+    }
+  }
+}
+
+// Dashboard Animations
+@keyframes dashboard-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dashboard {
+  animation: dashboard-fade-in $transition-normal ease-out;
+}
+
+// Dashboard States
+.dashboard {
+  &--loading {
+    .dashboard__stats,
+    .dashboard__recent,
+    .dashboard__gallery {
+      opacity: 0.7;
+      pointer-events: none;
+    }
+  }
+}
+
+// Responsive Design
+@include mobile {
+  .dashboard__stats {
+    grid-template-columns: 1fr;
+  }
+  
+  .dashboard__stat-content {
+    padding: $spacing-4;
+  }
+  
+  .dashboard__stat-icon {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .dashboard__stat-value {
+    font-size: $font-size-xl;
+  }
+  
+  .dashboard__recent-item {
+    padding: $spacing-2;
+  }
+  
+  .dashboard__recent-image {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+// Dark Mode Adjustments
+@media (prefers-color-scheme: dark) {
+  .dashboard__stat-card {
+    border-color: $dark-border;
+  }
+  
+  .dashboard__recent .card,
+  .dashboard__gallery .card {
+    border-color: $dark-border;
+  }
+}
+
+.dark .dashboard__stat-card {
+  border-color: $dark-border;
+}
+
+.dark .dashboard__recent .card,
+.dark .dashboard__gallery .card {
+  border-color: $dark-border;
+}
+
+// Accessibility
+.dashboard {
+  // High contrast mode support
+  @media (prefers-contrast: high) {
+    .dashboard__stat-card,
+    .dashboard__recent .card,
+    .dashboard__gallery .card {
+      border: 2px solid currentColor;
+    }
+  }
+  
+  // Reduced motion support
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    
+    .dashboard__stat-card:hover,
+    .dashboard__recent-item:hover {
+      transform: none;
+    }
+  }
+}
+
+
+
+
+
+

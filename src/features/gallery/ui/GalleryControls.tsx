@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import { Grid3X3, List, Search, X } from 'lucide-react';
-import Button from '@/shared/ui/atoms/Button';
-import SearchInput from '@/features/search/ui/SearchInput';
-import SearchFilters from '@/features/search/ui/SearchFilters';
-import { useSearch } from '@/features/search/model/useSearch';
-import { Image } from '@/entities/image/model/types';
-import { useState, useEffect } from 'react';
+import { Grid3X3, List, Search, X } from "lucide-react";
+import Button from "@/shared/ui/atoms/Button";
+import SearchInput from "@/features/search/ui/SearchInput";
+import SearchFilters from "@/features/search/ui/SearchFilters";
+import { useSearch } from "@/features/search/model/useSearch";
+import { Image } from "@/entities/image/model/types";
+import { useState, useEffect } from "react";
 
 interface GalleryControlsProps {
   images: Image[];
   onFilteredImagesChange: (images: Image[]) => void;
-  viewMode: 'grid' | 'list';
-  onViewModeChange: (mode: 'grid' | 'list') => void;
+  viewMode: "grid" | "list";
+  onViewModeChange: (mode: "grid" | "list") => void;
 }
 
 export default function GalleryControls({
@@ -22,7 +22,7 @@ export default function GalleryControls({
   onViewModeChange,
 }: GalleryControlsProps) {
   const [showFilters, setShowFilters] = useState(false);
-  
+
   const {
     filters,
     searchImages,
@@ -53,18 +53,17 @@ export default function GalleryControls({
             className="search-field"
           />
           {filters.query && (
-            <button
-              onClick={() => setQuery('')}
-              className="search-clear"
-            >
+            <button onClick={() => setQuery("")} className="search-clear">
               <X className="w-4 h-4" />
             </button>
           )}
         </div>
-        
+
         <select
           value={filters.sortBy}
-          onChange={(e) => setSortBy(e.target.value as 'newest' | 'oldest' | 'title' | 'size')}
+          onChange={(e) =>
+            setSortBy(e.target.value as "newest" | "oldest" | "title" | "size")
+          }
           className="input-prism min-w-[120px]"
         >
           <option value="newest">최신순</option>
@@ -87,24 +86,24 @@ export default function GalleryControls({
           onToggle={() => setShowFilters(!showFilters)}
         />
       </div>
-      
+
       <div className="flex items-center space-x-2">
         <button
-          onClick={() => onViewModeChange('grid')}
+          onClick={() => onViewModeChange("grid")}
           className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-200 ${
-            viewMode === 'grid' 
-              ? 'bg-primary-500 text-white shadow-lg' 
-              : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+            viewMode === "grid"
+              ? "bg-primary-500 text-white shadow-lg"
+              : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700"
           }`}
         >
           <Grid3X3 className="w-4 h-4" />
         </button>
         <button
-          onClick={() => onViewModeChange('list')}
+          onClick={() => onViewModeChange("list")}
           className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-200 ${
-            viewMode === 'list' 
-              ? 'bg-primary-500 text-white shadow-lg' 
-              : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+            viewMode === "list"
+              ? "bg-primary-500 text-white shadow-lg"
+              : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700"
           }`}
         >
           <List className="w-4 h-4" />

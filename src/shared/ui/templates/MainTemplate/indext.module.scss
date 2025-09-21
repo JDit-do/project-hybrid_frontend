@@ -1,0 +1,20 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100vh;
+  padding: 1.75rem 2rem;
+  overflow: auto;
+
+  main {
+    flex: 1;
+    padding: 2rem 6rem;
+    background: var(--color-foreground);
+    border-radius: 1rem;
+    overflow: auto;
+
+    * {
+      color: var(--color-muted);
+    }
+  }
+}

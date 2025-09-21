@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { Card, CardContent } from '@/shared/ui/molecules/Card';
 import { Image as ImageType } from '@/entities/image/model/types';
+import OptimizedImage from '@/shared/ui/atoms/OptimizedImage';
 
 interface ImageGridProps {
   images: ImageType[];

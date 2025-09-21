@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useState, useRef, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Grid3X3, List, Search, Filter } from 'lucide-react';
-import { Card, CardContent } from '@/shared/ui/molecules/Card';
-import Button from '@/shared/ui/atoms/Button';
-import { Image } from '@/entities/image/model/types';
+import { useState, useRef, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Grid3X3, List, Search, Filter } from "lucide-react";
+import { Card, CardContent } from "@/shared/ui/molecules/Card";
+import Button from "@/shared/ui/atoms/Button";
+import { Image } from "@/entities/image/model/types";
 
 interface ImageGalleryProps {
   images: Image[];
@@ -13,8 +13,8 @@ interface ImageGalleryProps {
   hasMore: boolean;
   onLoadMore: () => void;
   onImageClick: (image: Image) => void;
-  viewMode: 'grid' | 'list';
-  onViewModeChange: (mode: 'grid' | 'list') => void;
+  viewMode: "grid" | "list";
+  onViewModeChange: (mode: "grid" | "list") => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
   sortBy: string;
@@ -37,18 +37,21 @@ export default function ImageGallery({
   const observerRef = useRef<IntersectionObserver | null>(null);
   const lastImageRef = useRef<HTMLDivElement | null>(null);
 
-  const lastImageElementRef = useCallback((node: HTMLDivElement | null) => {
-    if (loading) return;
-    if (observerRef.current) observerRef.current.disconnect();
-    
-    observerRef.current = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting && hasMore) {
-        onLoadMore();
-      }
-    });
-    
-    if (node) observerRef.current.observe(node);
-  }, [loading, hasMore, onLoadMore]);
+  const lastImageElementRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (loading) return;
+      if (observerRef.current) observerRef.current.disconnect();
+
+      observerRef.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          onLoadMore();
+        }
+      });
+
+      if (node) observerRef.current.observe(node);
+    },
+    [loading, hasMore, onLoadMore]
+  );
 
   return (
     <div className="space-y-6">
@@ -65,7 +68,7 @@ export default function ImageGallery({
               className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-600 dark:text-white"
             />
           </div>
-          
+
           <select
             value={sortBy}
             onChange={(e) => onSortChange(e.target.value)}
@@ -76,19 +79,19 @@ export default function ImageGallery({
             <option value="title">제목순</option>
           </select>
         </div>
-        
+
         <div className="flex items-center space-x-2">
           <Button
-            variant={viewMode === 'grid' ? 'primary' : 'outline'}
+            variant={viewMode === "grid" ? "primary" : "outline"}
             size="sm"
-            onClick={() => onViewModeChange('grid')}
+            onClick={() => onViewModeChange("grid")}
           >
             <Grid3X3 className="h-4 w-4" />
           </Button>
           <Button
-            variant={viewMode === 'list' ? 'primary' : 'outline'}
+            variant={viewMode === "list" ? "primary" : "outline"}
             size="sm"
-            onClick={() => onViewModeChange('list')}
+            onClick={() => onViewModeChange("list")}
           >
             <List className="h-4 w-4" />
           </Button>
@@ -96,11 +99,13 @@ export default function ImageGallery({
       </div>
 
       {/* Image Grid/List */}
-      <div className={
-        viewMode === 'grid' 
-          ? 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6'
-          : 'space-y-4'
-      }>
+      <div
+        className={
+          viewMode === "grid"
+            ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"
+            : "space-y-4"
+        }
+      >
         <AnimatePresence>
           {images.map((image, index) => (
             <motion.div
@@ -113,7 +118,7 @@ export default function ImageGallery({
               onClick={() => onImageClick(image)}
               className="cursor-pointer group"
             >
-              {viewMode === 'grid' ? (
+              {viewMode === "grid" ? (
                 <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
                   <div className="aspect-square relative overflow-hidden">
                     <img
@@ -125,7 +130,9 @@ export default function ImageGallery({
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
                   </div>
                   <CardContent className="p-4">
-                    <h3 className="font-medium text-sm truncate">{image.title}</h3>
+                    <h3 className="font-medium text-sm truncate">
+                      {image.title}
+                    </h3>
                     <p className="text-xs text-gray-500 mt-1">
                       {new Date(image.createdAt).toLocaleDateString()}
                     </p>

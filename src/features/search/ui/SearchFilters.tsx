@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Filter, X, Calendar, Tag } from 'lucide-react';
-import Button from '@/shared/ui/atoms/Button';
-import { SearchFilters as SearchFiltersType } from '../model/useSearch';
+import { useState } from "react";
+import { Filter, X, Calendar, Tag } from "lucide-react";
+import Button from "@/shared/ui/atoms/Button";
+import { SearchFilters as SearchFiltersType } from "../model/useSearch";
 
 interface SearchFiltersProps {
   filters: SearchFiltersType;
@@ -22,8 +22,8 @@ export default function SearchFilters({
   isOpen,
   onToggle,
 }: SearchFiltersProps) {
-  const [localDateFrom, setLocalDateFrom] = useState(filters.dateFrom || '');
-  const [localDateTo, setLocalDateTo] = useState(filters.dateTo || '');
+  const [localDateFrom, setLocalDateFrom] = useState(filters.dateFrom || "");
+  const [localDateTo, setLocalDateTo] = useState(filters.dateTo || "");
 
   const handleDateRangeApply = () => {
     onFiltersChange({
@@ -34,7 +34,7 @@ export default function SearchFilters({
 
   const handleTagToggle = (tag: string) => {
     const newTags = filters.tags.includes(tag)
-      ? filters.tags.filter(t => t !== tag)
+      ? filters.tags.filter((t) => t !== tag)
       : [...filters.tags, tag];
     onFiltersChange({ tags: newTags });
   };
@@ -81,11 +81,7 @@ export default function SearchFilters({
                   placeholder="종료일"
                 />
               </div>
-              <Button
-                onClick={handleDateRangeApply}
-                size="sm"
-                className="mt-2"
-              >
+              <Button onClick={handleDateRangeApply} size="sm" className="mt-2">
                 적용
               </Button>
             </div>
@@ -98,14 +94,14 @@ export default function SearchFilters({
                   태그
                 </h3>
                 <div className="flex flex-wrap gap-2">
-                  {availableTags.map(tag => (
+                  {availableTags.map((tag) => (
                     <button
                       key={tag}
                       onClick={() => handleTagToggle(tag)}
                       className={`px-2 py-1 text-xs rounded-full transition-colors ${
                         filters.tags.includes(tag)
-                          ? 'bg-blue-500 text-white'
-                          : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                          ? "bg-blue-500 text-white"
+                          : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
                       }`}
                     >
                       {tag}
@@ -117,18 +113,11 @@ export default function SearchFilters({
 
             {/* Actions */}
             <div className="flex justify-between pt-2 border-t border-gray-200 dark:border-gray-700">
-              <Button
-                onClick={onClearFilters}
-                variant="outline"
-                size="sm"
-              >
+              <Button onClick={onClearFilters} variant="outline" size="sm">
                 <X className="h-4 w-4 mr-1" />
                 초기화
               </Button>
-              <Button
-                onClick={onToggle}
-                size="sm"
-              >
+              <Button onClick={onToggle} size="sm">
                 닫기
               </Button>
             </div>

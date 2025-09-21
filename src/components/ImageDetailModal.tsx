@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Download, Share2, Heart, Calendar, Tag, ArrowLeft, ArrowRight } from 'lucide-react';
+import { X, Download, Share2, Heart, Tag, ArrowLeft, ArrowRight } from 'lucide-react';
 import Modal from '@/components/ui/modal';
 import Button from '@/components/ui/button';
 
@@ -160,10 +160,6 @@ export default function ImageDetailModal({
           {/* Header */}
           <div className="p-6 border-b border-gray-200 dark:border-gray-700">
             <h2 className="text-xl font-bold mb-2">{image.title}</h2>
-            <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-              <Calendar className="h-4 w-4 mr-2" />
-              {new Date(image.createdAt).toLocaleDateString()}
-            </div>
           </div>
 
           {/* Actions */}
@@ -177,20 +173,6 @@ export default function ImageDetailModal({
               >
                 <Heart className={`h-4 w-4 mr-2 ${isLiked ? 'fill-current' : ''}`} />
                 {isLiked ? '좋아요' : '좋아요'}
-              </Button>
-              <Button
-                onClick={handleDownload}
-                variant="outline"
-                size="sm"
-              >
-                <Download className="h-4 w-4" />
-              </Button>
-              <Button
-                onClick={handleShare}
-                variant="outline"
-                size="sm"
-              >
-                <Share2 className="h-4 w-4" />
               </Button>
             </div>
           </div>

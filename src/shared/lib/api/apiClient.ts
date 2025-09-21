@@ -1,3 +1,5 @@
+import { apiConfig } from '@/shared/lib/config/api';
+
 interface ApiError extends Error {
   status?: number;
   code?: string;
@@ -97,7 +99,7 @@ const retryRequest = async <T>(
 
 // API 함수들
 export const apiGet = async <T>(endpoint: string, options: RequestInit = {}): Promise<T> => {
-  const url = `${process.env.NEXT_PUBLIC_API_URL || ''}${endpoint}`;
+  const url = `${apiConfig.baseUrl}${endpoint}`;
   const cacheKey = getCacheKey(url, options);
   
   // 캐시 확인
@@ -144,7 +146,7 @@ export const apiGet = async <T>(endpoint: string, options: RequestInit = {}): Pr
 };
 
 export const apiPost = async <T>(endpoint: string, data?: unknown, options: RequestInit = {}): Promise<T> => {
-  const url = `${process.env.NEXT_PUBLIC_API_URL || ''}${endpoint}`;
+  const url = `${apiConfig.baseUrl}${endpoint}`;
   
   return retryRequest(async () => {
     const response = await fetchWithTimeout(url, {
@@ -170,7 +172,7 @@ export const apiPost = async <T>(endpoint: string, data?: unknown, options: Requ
 };
 
 export const apiPatch = async <T>(endpoint: string, data?: unknown, options: RequestInit = {}): Promise<T> => {
-  const url = `${process.env.NEXT_PUBLIC_API_URL || ''}${endpoint}`;
+  const url = `${apiConfig.baseUrl}${endpoint}`;
   
   return retryRequest(async () => {
     const response = await fetchWithTimeout(url, {
@@ -196,7 +198,7 @@ export const apiPatch = async <T>(endpoint: string, data?: unknown, options: Req
 };
 
 export const apiDelete = async <T>(endpoint: string, options: RequestInit = {}): Promise<T> => {
-  const url = `${process.env.NEXT_PUBLIC_API_URL || ''}${endpoint}`;
+  const url = `${apiConfig.baseUrl}${endpoint}`;
   
   return retryRequest(async () => {
     const response = await fetchWithTimeout(url, {

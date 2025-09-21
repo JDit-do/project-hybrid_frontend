@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cursor UI - Dashboard (Static)</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script defer src="./app.js"></script>
+  <style> .overlay{display:none;} </style>
+  </head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="brand">
+        <div class="brand-dot"></div>
+        <div class="brand-line"></div>
+        <div class="brand-title">memory</div>
+        <div class="brand-sub">a prism</div>
+      </div>
+      <nav class="nav">
+        <button class="btn" onclick="document.querySelector('#uploadOverlay').style.display='flex'">이미지 업로드</button>
+        <a class="btn" href="./onboarding.html">온보딩 이동</a>
+      </nav>
+    </header>
+
+    <section class="panel">
+      <div class="grid">
+        <!-- sample cards -->
+        <div class="card"><div class="card-img"></div><div class="card-body"><div class="card-title">제목제목제목...</div><div class="tags"><span class="tag">#태그</span><span class="tag">#여행</span><span class="tag">#인물</span></div></div></div>
+        <div class="card"><div class="card-img"></div><div class="card-body"><div class="card-title">제목제목제목...</div><div class="tags"><span class="tag">#태그</span><span class="tag">#여행</span><span class="tag">#인물</span></div></div></div>
+        <div class="card"><div class="card-img"></div><div class="card-body"><div class="card-title">제목제목제목...</div><div class="tags"><span class="tag">#태그</span><span class="tag">#여행</span><span class="tag">#인물</span></div></div></div>
+        <div class="card"><div class="card-img"></div><div class="card-body"><div class="card-title">제목제목제목...</div><div class="tags"><span class="tag">#태그</span><span class="tag">#여행</span><span class="tag">#인물</span></div></div></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Detail Modal -->
+  <div class="overlay" id="detailOverlay">
+    <div class="modal">
+      <div class="modal-head"><button class="modal-close" data-close="#detailOverlay">×</button></div>
+      <div class="modal-hero"></div>
+      <div class="modal-body">
+        <div class="detail-title">제목제목제목제목제목제목제목제목제목제목제목....</div>
+        <div class="detail-meta">2025-09-16 12:30 · 1920×1080</div>
+        <div class="tags"><span class="tag">#태그</span><span class="tag">#여행</span><span class="tag">#인물</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Upload Modal -->
+  <div class="overlay" id="uploadOverlay">
+    <div class="modal">
+      <div class="modal-head"><button class="modal-close" data-close="#uploadOverlay">×</button></div>
+      <div class="modal-hero"></div>
+      <div class="modal-body">
+        <div class="detail-title">AI가 자동으로 태깅해 드려요</div>
+        <div class="tags" style="margin-bottom:12px"><span class="tag">#people</span><span class="tag">#travel</span><span class="tag">#food</span></div>
+        <div class="dropzone" id="dropzone">여기로 드래그&드랍 또는 클릭하여 선택</div>
+        <div class="upload-list" id="uploadList"></div>
+        <input type="file" id="fileInput" accept="image/*" multiple style="display:none" />
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+
+

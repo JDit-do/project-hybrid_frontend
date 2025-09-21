@@ -1,49 +1,57 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";
+// Presign API - UI 테스트를 위해 주석 처리
+/*
+import { NextRequest } from 'next/server';
+import { getAuthenticatedUser } from '@/shared/lib/api/auth';
+import { withApiHandler } from '@/shared/lib/api/response';
+import { SUCCESS_MESSAGES } from '@/shared/lib/api/constants';
+import { apiConfig } from '@/shared/lib/config/api';
 
-function decodeJwtNoVerify(jwt: string) {
-  const [, payloadB64] = jwt.split(".");
-  const json = Buffer.from(
-    payloadB64.replace(/-/g, "+").replace(/_/g, "/"),
-    "base64"
-  ).toString("utf8");
-  return JSON.parse(json);
+const PRESIGN_API_ENDPOINT = apiConfig.presignApi;
+
+if (!PRESIGN_API_ENDPOINT) {
+  throw new Error('Presign API endpoint is not configured');
 }
 
-export async function POST(req: NextRequest) {
-  const jwt = await getToken({ req, secureCookie: false });
-  const access = jwt?.access_token;
+export async function POST(request: NextRequest) {
+  return withApiHandler(async () => {
+    const { user, error } = await getAuthenticatedUser();
+    if (error) {
+      throw new Error('Unauthorized');
+    }
 
-  if (!access)
-    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+    const { fileName, contentType } = await request.json();
 
-  const claims = decodeJwtNoVerify(access);
-  console.log("access_token claims >>>", {
-    iss: claims.iss,
-    aud: claims.aud ?? claims.client_id,
-    token_use: claims.token_use,
-    exp: claims.exp,
-    scope: claims.scope,
-    sub: claims.sub,
-  });
+    if (!fileName || !contentType) {
+      throw new Error('Bad Request: fileName and contentType are required');
+    }
 
-  const body = await req.text();
+    const response = await fetch(PRESIGN_API_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${user.accessToken}`,
+      },
+      body: JSON.stringify({ fileName, contentType }),
+    });
 
-  const r = await fetch(process.env.NEXT_PUBLIC_PRESIGN_API!, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${access}`,
-      "Content-Type": "application/json",
-    },
-    body,
-  });
+    if (!response.ok) {
+      throw new Error(`Presign API error: ${response.status}`);
+    }
 
-  const hdrs = Object.fromEntries(r.headers.entries());
-  const bodyText = await r.text();
-  console.log("GW status:", r.status, hdrs, bodyText);
+    const data = await response.json();
+    return data;
+  }, SUCCESS_MESSAGES.PRESIGN_SUCCESS);
+}
+*/
 
-  return new NextResponse(bodyText, {
-    status: r.status,
-    headers: { "content-type": hdrs["content-type"] ?? "application/json" },
+// UI 테스트용 임시 응답
+export async function POST() {
+  return new Response(JSON.stringify({
+    success: false,
+    message: 'Presign API is temporarily disabled for UI testing',
+    data: null
+  }), {
+    status: 503,
+    headers: { 'Content-Type': 'application/json' }
   });
 }

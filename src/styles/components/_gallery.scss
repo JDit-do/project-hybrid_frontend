@@ -1,0 +1,445 @@
+// Gallery Component
+// 현대적이고 세련된 갤러리 컴포넌트
+
+.gallery {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-6;
+  padding: $spacing-6;
+  background: $background;
+  min-height: 100vh;
+
+  @media (prefers-color-scheme: dark) {
+    background: $dark-background;
+  }
+
+  .dark & {
+    background: $dark-background;
+  }
+
+  @include mobile {
+    padding: $spacing-4;
+    gap: $spacing-4;
+  }
+}
+
+.gallery__content {
+  flex: 1;
+  min-height: 0;
+}
+
+.gallery__loading {
+  @include flex-center;
+  flex-direction: column;
+  gap: $spacing-4;
+  padding: $spacing-12;
+  color: $muted-foreground;
+
+  @media (prefers-color-scheme: dark) {
+    color: $dark-muted-foreground;
+  }
+
+  .dark & {
+    color: $dark-muted-foreground;
+  }
+}
+
+.gallery__spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid $muted;
+  border-top: 4px solid $primary-500;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+
+  @media (prefers-color-scheme: dark) {
+    border-color: $dark-muted;
+    border-top-color: $primary-400;
+  }
+
+  .dark & {
+    border-color: $dark-muted;
+    border-top-color: $primary-400;
+  }
+}
+
+.gallery__loading-text {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-medium;
+  text-align: center;
+}
+
+.gallery__end {
+  @include flex-center;
+  padding: $spacing-8;
+  color: $muted-foreground;
+
+  @media (prefers-color-scheme: dark) {
+    color: $dark-muted-foreground;
+  }
+
+  .dark & {
+    color: $dark-muted-foreground;
+  }
+}
+
+.gallery__end-text {
+  font-size: $font-size-base;
+  text-align: center;
+}
+
+// Gallery Header
+.gallery-header {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-4;
+  padding: $spacing-6;
+  background: $background;
+  border: 1px solid $border;
+  border-radius: $border-radius-xl;
+  box-shadow: $shadow-sm;
+
+  @media (prefers-color-scheme: dark) {
+    background: $dark-background;
+    border-color: $dark-border;
+  }
+
+  .dark & {
+    background: $dark-background;
+    border-color: $dark-border;
+  }
+
+  @include mobile {
+    padding: $spacing-4;
+    gap: $spacing-3;
+  }
+}
+
+.gallery-header__main {
+  display: flex;
+  align-items: center;
+  gap: $spacing-4;
+
+  @include mobile {
+    flex-direction: column;
+    align-items: stretch;
+    gap: $spacing-3;
+  }
+}
+
+.gallery-header__search {
+  flex: 1;
+  min-width: 0;
+}
+
+.gallery-header__actions {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  flex-shrink: 0;
+
+  @include mobile {
+    justify-content: center;
+  }
+}
+
+.gallery-header__action {
+  @include flex-center;
+  gap: $spacing-2;
+  padding: $spacing-2-5 $spacing-4;
+  background: $muted;
+  border: 1px solid $border;
+  border-radius: $border-radius-lg;
+  color: $muted-foreground;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  cursor: pointer;
+  transition: all $transition-normal;
+
+  &:hover {
+    background: $muted/80;
+    color: $foreground;
+    transform: translateY(-1px);
+    box-shadow: $shadow-sm;
+  }
+
+  &--primary {
+    background: $gradient-primary;
+    color: white;
+    border-color: $primary-500;
+
+    &:hover {
+      background: $gradient-primary;
+      transform: translateY(-2px);
+      box-shadow: $shadow-md;
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background: $dark-muted;
+    color: $dark-muted-foreground;
+    border-color: $dark-border;
+
+    &:hover {
+      background: $dark-muted/80;
+      color: $dark-foreground;
+    }
+  }
+
+  .dark & {
+    background: $dark-muted;
+    color: $dark-muted-foreground;
+    border-color: $dark-border;
+
+    &:hover {
+      background: $dark-muted/80;
+      color: $dark-foreground;
+    }
+  }
+
+  @include mobile {
+    padding: $spacing-2 $spacing-3;
+    font-size: $font-size-xs;
+  }
+}
+
+.gallery-header__filters {
+  padding-top: $spacing-4;
+  border-top: 1px solid $border;
+
+  @media (prefers-color-scheme: dark) {
+    border-top-color: $dark-border;
+  }
+
+  .dark & {
+    border-top-color: $dark-border;
+  }
+}
+
+// Image Grid
+.image-grid {
+  display: grid;
+  gap: $spacing-6;
+
+  &--grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+
+    @include tablet {
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+
+    @include mobile {
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: $spacing-4;
+    }
+  }
+
+  &--list {
+    grid-template-columns: 1fr;
+    gap: $spacing-4;
+  }
+
+  &--masonry {
+    column-count: 3;
+    column-gap: $spacing-6;
+
+    .image-grid__item {
+      break-inside: avoid;
+      margin-bottom: $spacing-6;
+    }
+
+    @include tablet {
+      column-count: 2;
+    }
+
+    @include mobile {
+      column-count: 1;
+    }
+  }
+}
+
+.image-grid__item {
+  transition: all $transition-normal;
+
+  &--grid {
+    // Grid item specific styles
+  }
+
+  &--list {
+    // List item specific styles
+  }
+
+  &--masonry {
+    // Masonry item specific styles
+  }
+}
+
+.image-grid__skeleton {
+  @include loading-shimmer;
+  border-radius: $border-radius-xl;
+  aspect-ratio: 4/3;
+}
+
+.image-grid__empty {
+  @include flex-center;
+  flex-direction: column;
+  padding: $spacing-4;
+  text-align: center;
+}
+
+.image-grid__empty-content {
+  max-width: 400px;
+}
+
+.image-grid__empty-icon {
+  @include flex-center;
+  width: 80px;
+  height: 80px;
+  margin: 0 auto $spacing-4;
+  background: $muted;
+  border-radius: $border-radius-full;
+
+  @media (prefers-color-scheme: dark) {
+    background: $dark-muted;
+  }
+
+  .dark & {
+    background: $dark-muted;
+  }
+}
+
+.image-grid__empty-title {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-semibold;
+  color: $foreground;
+  margin-bottom: $spacing-2;
+
+  @media (prefers-color-scheme: dark) {
+    color: $dark-foreground;
+  }
+
+  .dark & {
+    color: $dark-foreground;
+  }
+}
+
+.image-grid__empty-description {
+  font-size: $font-size-base;
+  color: $muted-foreground;
+  line-height: $line-height-relaxed;
+
+  @media (prefers-color-scheme: dark) {
+    color: $dark-muted-foreground;
+  }
+
+  .dark & {
+    color: $dark-muted-foreground;
+  }
+}
+
+// Gallery Animations
+@keyframes gallery-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.gallery {
+  animation: gallery-fade-in $transition-normal ease-out;
+}
+
+// Gallery States
+.gallery {
+  &--loading {
+    .gallery__content {
+      opacity: 0.7;
+      pointer-events: none;
+    }
+  }
+
+  &--error {
+    .gallery-header {
+      border-color: $error-500;
+      background: rgba($error-500, 0.05);
+    }
+  }
+}
+
+// Gallery Responsive Design
+@include mobile {
+  .gallery {
+    padding: $spacing-3;
+    gap: $spacing-3;
+  }
+
+  .gallery-header {
+    padding: $spacing-3;
+  }
+
+  .gallery-header__main {
+    gap: $spacing-2;
+  }
+
+  .gallery-header__actions {
+    gap: $spacing-2;
+  }
+}
+
+// Dark Mode Adjustments
+@media (prefers-color-scheme: dark) {
+  .gallery {
+    background: $dark-background;
+  }
+
+  .gallery-header {
+    background: $dark-background;
+    border-color: $dark-border;
+  }
+}
+
+.dark .gallery {
+  background: $dark-background;
+}
+
+.dark .gallery-header {
+  background: $dark-background;
+  border-color: $dark-border;
+}
+
+// Accessibility
+.gallery {
+  // High contrast mode support
+  @media (prefers-contrast: high) {
+    .gallery-header {
+      border: 2px solid currentColor;
+    }
+  }
+
+  // Reduced motion support
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+
+    .gallery-header__action {
+      transition: none;
+
+      &:hover {
+        transform: none;
+      }
+    }
+  }
+}
+
+// Loading Animation
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

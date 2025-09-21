@@ -1,0 +1,573 @@
+// App Layout Component
+// 현대적이고 반응형인 메인 레이아웃 컴포넌트
+
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  background: $background;
+  
+  @media (prefers-color-scheme: dark) {
+    background: $dark-background;
+  }
+  
+  .dark & {
+    background: $dark-background;
+  }
+}
+
+.app-layout__overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: $z-modal-backdrop;
+  
+  @include mobile {
+    display: block;
+  }
+  
+  @include tablet {
+    display: none;
+  }
+}
+
+.app-layout__sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 280px;
+  background: $background;
+  border-right: 1px solid $border;
+  z-index: $z-modal;
+  display: flex;
+  flex-direction: column;
+  
+  @media (prefers-color-scheme: dark) {
+    background: $dark-background;
+    border-right-color: $dark-border;
+  }
+  
+  .dark & {
+    background: $dark-background;
+    border-right-color: $dark-border;
+  }
+  
+  @include tablet {
+    position: static;
+    width: 240px;
+  }
+  
+  @include mobile {
+    width: 280px;
+  }
+}
+
+.app-layout__sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-6;
+  border-bottom: 1px solid $border;
+  
+  @media (prefers-color-scheme: dark) {
+    border-bottom-color: $dark-border;
+  }
+  
+  .dark & {
+    border-bottom-color: $dark-border;
+  }
+}
+
+.app-layout__logo {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+}
+
+.app-layout__logo-icon {
+  @include flex-center;
+  width: 40px;
+  height: 40px;
+  background: $gradient-primary;
+  border-radius: $border-radius-lg;
+  color: white;
+}
+
+.app-layout__logo-text {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: $foreground;
+  
+  @media (prefers-color-scheme: dark) {
+    color: $dark-foreground;
+  }
+  
+  .dark & {
+    color: $dark-foreground;
+  }
+}
+
+.app-layout__sidebar-close {
+  @include flex-center;
+  width: 32px;
+  height: 32px;
+  background: $muted;
+  border: none;
+  border-radius: $border-radius-md;
+  cursor: pointer;
+  transition: all $transition-fast;
+  color: $muted-foreground;
+  
+  &:hover {
+    background: $muted/80;
+    color: $foreground;
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    background: $dark-muted;
+    color: $dark-muted-foreground;
+    
+    &:hover {
+      background: $dark-muted/80;
+      color: $dark-foreground;
+    }
+  }
+  
+  .dark & {
+    background: $dark-muted;
+    color: $dark-muted-foreground;
+    
+    &:hover {
+      background: $dark-muted/80;
+      color: $dark-foreground;
+    }
+  }
+  
+  @include tablet {
+    display: none;
+  }
+}
+
+.app-layout__nav {
+  flex: 1;
+  padding: $spacing-4;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2;
+}
+
+.app-layout__nav-item {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  padding: $spacing-3 $spacing-4;
+  border-radius: $border-radius-lg;
+  text-decoration: none;
+  color: $muted-foreground;
+  font-weight: $font-weight-medium;
+  transition: all $transition-normal;
+  position: relative;
+  
+  &:hover {
+    background: $muted;
+    color: $foreground;
+  }
+  
+  &--active {
+    background: $primary-100;
+    color: $primary-700;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 4px;
+      height: 20px;
+      background: $primary-500;
+      border-radius: 0 $border-radius-sm $border-radius-sm 0;
+    }
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    color: $dark-muted-foreground;
+    
+    &:hover {
+      background: $dark-muted;
+      color: $dark-foreground;
+    }
+    
+    &--active {
+      background: $primary-900;
+      color: $primary-300;
+      
+      &::before {
+        background: $primary-400;
+      }
+    }
+  }
+  
+  .dark & {
+    color: $dark-muted-foreground;
+    
+    &:hover {
+      background: $dark-muted;
+      color: $dark-foreground;
+    }
+    
+    &--active {
+      background: $primary-900;
+      color: $primary-300;
+      
+      &::before {
+        background: $primary-400;
+      }
+    }
+  }
+}
+
+.app-layout__nav-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.app-layout__nav-label {
+  font-size: $font-size-base;
+}
+
+.app-layout__sidebar-footer {
+  padding: $spacing-4;
+  border-top: 1px solid $border;
+  
+  @media (prefers-color-scheme: dark) {
+    border-top-color: $dark-border;
+  }
+  
+  .dark & {
+    border-top-color: $dark-border;
+  }
+}
+
+.app-layout__logout {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  width: 100%;
+  padding: $spacing-3 $spacing-4;
+  background: transparent;
+  border: none;
+  border-radius: $border-radius-lg;
+  color: $muted-foreground;
+  font-weight: $font-weight-medium;
+  cursor: pointer;
+  transition: all $transition-normal;
+  
+  &:hover {
+    background: $error-100;
+    color: $error-700;
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    color: $dark-muted-foreground;
+    
+    &:hover {
+      background: $error-900;
+      color: $error-300;
+    }
+  }
+  
+  .dark & {
+    color: $dark-muted-foreground;
+    
+    &:hover {
+      background: $error-900;
+      color: $error-300;
+    }
+  }
+}
+
+.app-layout__main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-left: 0;
+  
+  @include tablet {
+    margin-left: 0;
+  }
+}
+
+.app-layout__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-4 $spacing-6;
+  background: $background;
+  border-bottom: 1px solid $border;
+  position: sticky;
+  top: 0;
+  z-index: $z-sticky;
+  
+  @media (prefers-color-scheme: dark) {
+    background: $dark-background;
+    border-bottom-color: $dark-border;
+  }
+  
+  .dark & {
+    background: $dark-background;
+    border-bottom-color: $dark-border;
+  }
+  
+  @include mobile {
+    padding: $spacing-3 $spacing-4;
+  }
+}
+
+.app-layout__header-left {
+  display: flex;
+  align-items: center;
+  gap: $spacing-4;
+}
+
+.app-layout__menu-button {
+  @include flex-center;
+  width: 40px;
+  height: 40px;
+  background: $muted;
+  border: none;
+  border-radius: $border-radius-lg;
+  cursor: pointer;
+  transition: all $transition-fast;
+  color: $muted-foreground;
+  
+  &:hover {
+    background: $muted/80;
+    color: $foreground;
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    background: $dark-muted;
+    color: $dark-muted-foreground;
+    
+    &:hover {
+      background: $dark-muted/80;
+      color: $dark-foreground;
+    }
+  }
+  
+  .dark & {
+    background: $dark-muted;
+    color: $dark-muted-foreground;
+    
+    &:hover {
+      background: $dark-muted/80;
+      color: $dark-foreground;
+    }
+  }
+  
+  @include tablet {
+    display: none;
+  }
+}
+
+.app-layout__title {
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  color: $foreground;
+  
+  @media (prefers-color-scheme: dark) {
+    color: $dark-foreground;
+  }
+  
+  .dark & {
+    color: $dark-foreground;
+  }
+  
+  @include mobile {
+    font-size: $font-size-xl;
+  }
+}
+
+.app-layout__header-right {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+}
+
+.app-layout__upload-button {
+  @include flex-center;
+  gap: $spacing-2;
+  padding: $spacing-2-5 $spacing-4;
+  background: $gradient-primary;
+  border: none;
+  border-radius: $border-radius-lg;
+  color: white;
+  font-weight: $font-weight-medium;
+  cursor: pointer;
+  transition: all $transition-normal;
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: $shadow-md;
+  }
+  
+  @include mobile {
+    padding: $spacing-2 $spacing-3;
+  }
+}
+
+.app-layout__user {
+  @include flex-center;
+  width: 40px;
+  height: 40px;
+  background: $muted;
+  border-radius: $border-radius-full;
+  cursor: pointer;
+  transition: all $transition-fast;
+  
+  &:hover {
+    background: $muted/80;
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    background: $dark-muted;
+    
+    &:hover {
+      background: $dark-muted/80;
+    }
+  }
+  
+  .dark & {
+    background: $dark-muted;
+    
+    &:hover {
+      background: $dark-muted/80;
+    }
+  }
+}
+
+.app-layout__user-avatar {
+  @include flex-center;
+  color: $muted-foreground;
+  
+  @media (prefers-color-scheme: dark) {
+    color: $dark-muted-foreground;
+  }
+  
+  .dark & {
+    color: $dark-muted-foreground;
+  }
+}
+
+.app-layout__content {
+  flex: 1;
+  padding: $spacing-6;
+  overflow-y: auto;
+  
+  @include mobile {
+    padding: $spacing-4;
+  }
+}
+
+// Layout Animations
+@keyframes layout-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.app-layout {
+  animation: layout-slide-in $transition-normal ease-out;
+}
+
+// Layout States
+.app-layout {
+  &--loading {
+    .app-layout__content {
+      opacity: 0.7;
+      pointer-events: none;
+    }
+  }
+}
+
+// Responsive Design
+@include mobile {
+  .app-layout__sidebar {
+    width: 100%;
+    max-width: 320px;
+  }
+  
+  .app-layout__header {
+    padding: $spacing-3 $spacing-4;
+  }
+  
+  .app-layout__content {
+    padding: $spacing-3;
+  }
+}
+
+// Dark Mode Adjustments
+@media (prefers-color-scheme: dark) {
+  .app-layout {
+    background: $dark-background;
+  }
+  
+  .app-layout__sidebar {
+    background: $dark-background;
+    border-right-color: $dark-border;
+  }
+  
+  .app-layout__header {
+    background: $dark-background;
+    border-bottom-color: $dark-border;
+  }
+}
+
+.dark .app-layout {
+  background: $dark-background;
+}
+
+.dark .app-layout__sidebar {
+  background: $dark-background;
+  border-right-color: $dark-border;
+}
+
+.dark .app-layout__header {
+  background: $dark-background;
+  border-bottom-color: $dark-border;
+}
+
+// Accessibility
+.app-layout {
+  // High contrast mode support
+  @media (prefers-contrast: high) {
+    .app-layout__sidebar {
+      border-right: 2px solid currentColor;
+    }
+    
+    .app-layout__header {
+      border-bottom: 2px solid currentColor;
+    }
+  }
+  
+  // Reduced motion support
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    
+    .app-layout__upload-button {
+      &:hover {
+        transform: none;
+      }
+    }
+  }
+}

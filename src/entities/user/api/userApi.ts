@@ -1,10 +1,8 @@
 import { User, UserSession } from '../model/types';
 
 export class UserApi {
-  private baseUrl = process.env.NEXT_PUBLIC_API_URL || '';
-
   async getCurrentUser(): Promise<User> {
-    const response = await fetch(`${this.baseUrl}/api/user/me`, {
+    const response = await fetch('/api/user/me', {
       credentials: 'include',
     });
     
@@ -16,7 +14,7 @@ export class UserApi {
   }
 
   async updateUser(userId: string, updates: Partial<User>): Promise<User> {
-    const response = await fetch(`${this.baseUrl}/api/user/${userId}`, {
+    const response = await fetch(`/api/user/${userId}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -33,7 +31,7 @@ export class UserApi {
   }
 
   async deleteUser(userId: string): Promise<void> {
-    const response = await fetch(`${this.baseUrl}/api/user/${userId}`, {
+    const response = await fetch(`/api/user/${userId}`, {
       method: 'DELETE',
       credentials: 'include',
     });
