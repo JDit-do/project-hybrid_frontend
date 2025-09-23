@@ -2,19 +2,23 @@
 
 import { useState, useCallback } from "react";
 import { motion } from "framer-motion";
-import { useSession, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import AppLayout from "@/shared/ui/organisms/AppLayout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/molecules/Card";
-import { 
-  Upload, 
-  Image, 
-  FileText, 
-  Settings,
+import MainTemplate from "@/shared/ui/templates/MainTemplate";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/shared/ui/molecules/Card";
+import {
+  Upload,
+  Image,
+  FileText,
   CheckCircle,
   AlertCircle,
-  X
+  X,
 } from "lucide-react";
 
 export default function UploadPage() {
@@ -22,8 +26,12 @@ export default function UploadPage() {
   const router = useRouter();
   const [dragActive, setDragActive] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
-  const [uploadProgress, setUploadProgress] = useState<{ [key: string]: number }>({});
-  const [uploadStatus, setUploadStatus] = useState<{ [key: string]: 'pending' | 'uploading' | 'success' | 'error' }>({});
+  const [uploadProgress, setUploadProgress] = useState<{
+    [key: string]: number;
+  }>({});
+  const [uploadStatus, setUploadStatus] = useState<{
+    [key: string]: "pending" | "uploading" | "success" | "error";
+  }>({});
 
   // Auth check
   useEffect(() => {
@@ -32,9 +40,9 @@ export default function UploadPage() {
     }
   }, [status, router]);
 
-  const handleLogout = () => {
-    signOut({ callbackUrl: "/api/auth/logout-redirect" });
-  };
+  // const handleLogout = () => {
+  //   signOut({ callbackUrl: "/api/auth/logout-redirect" });
+  // };
 
   const handleDrag = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -50,27 +58,30 @@ export default function UploadPage() {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-    
+
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const files = Array.from(e.dataTransfer.files);
-      setUploadedFiles(prev => [...prev, ...files]);
+      setUploadedFiles((prev) => [...prev, ...files]);
     }
   }, []);
 
-  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const files = Array.from(e.target.files);
-      setUploadedFiles(prev => [...prev, ...files]);
-    }
-  }, []);
+  const handleFileSelect = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.files && e.target.files[0]) {
+        const files = Array.from(e.target.files);
+        setUploadedFiles((prev) => [...prev, ...files]);
+      }
+    },
+    []
+  );
 
   const removeFile = useCallback((index: number) => {
-    setUploadedFiles(prev => prev.filter((_, i) => i !== index));
+    setUploadedFiles((prev) => prev.filter((_, i) => i !== index));
   }, []);
 
   const simulateUpload = useCallback((file: File, index: number) => {
-    setUploadStatus(prev => ({ ...prev, [index]: 'uploading' }));
-    
+    setUploadStatus((prev) => ({ ...prev, [index]: "uploading" }));
+
     // Simulate upload progress
     let progress = 0;
     const interval = setInterval(() => {
@@ -78,9 +89,9 @@ export default function UploadPage() {
       if (progress >= 100) {
         progress = 100;
         clearInterval(interval);
-        setUploadStatus(prev => ({ ...prev, [index]: 'success' }));
+        setUploadStatus((prev) => ({ ...prev, [index]: "success" }));
       }
-      setUploadProgress(prev => ({ ...prev, [index]: progress }));
+      setUploadProgress((prev) => ({ ...prev, [index]: progress }));
     }, 200);
   }, []);
 
@@ -104,10 +115,7 @@ export default function UploadPage() {
   }
 
   return (
-    <AppLayout
-      currentPage="upload"
-      onLogout={handleLogout}
-    >
+    <MainTemplate>
       <div className="upload">
         {/* Header */}
         <motion.div
@@ -136,7 +144,9 @@ export default function UploadPage() {
           <Card className="upload__card">
             <CardContent className="upload__card-content">
               <div
-                className={`upload__dropzone ${dragActive ? 'upload__dropzone--active' : ''}`}
+                className={`upload__dropzone ${
+                  dragActive ? "upload__dropzone--active" : ""
+                }`}
                 onDragEnter={handleDrag}
                 onDragLeave={handleDrag}
                 onDragOver={handleDrag}
@@ -144,7 +154,7 @@ export default function UploadPage() {
               >
                 <div className="upload__dropzone-content">
                   <div className="upload__dropzone-icon">
-                    <Image className="w-16 h-16" />
+                    <Image className="w-16 h-16" width={160} hanging={160} aria-hidden="true" />
                   </div>
                   <h3 className="upload__dropzone-title">
                     이미지를 여기에 드래그하세요
@@ -191,7 +201,12 @@ export default function UploadPage() {
                       >
                         <div className="upload__file-info">
                           <div className="upload__file-icon">
-                            <Image className="w-5 h-5" />
+                            <Image
+                              className="w-5 h-5"
+                              width={160}
+                              hanging={160}
+                              aria-hidden="true"
+                            />
                           </div>
                           <div className="upload__file-details">
                             <p className="upload__file-name">{file.name}</p>
@@ -202,20 +217,22 @@ export default function UploadPage() {
                         </div>
 
                         <div className="upload__file-actions">
-                          {uploadStatus[index] === 'uploading' && (
+                          {uploadStatus[index] === "uploading" && (
                             <div className="upload__progress">
-                              <div 
+                              <div
                                 className="upload__progress-bar"
-                                style={{ width: `${uploadProgress[index] || 0}%` }}
+                                style={{
+                                  width: `${uploadProgress[index] || 0}%`,
+                                }}
                               />
                             </div>
                           )}
-                          
-                          {uploadStatus[index] === 'success' && (
+
+                          {uploadStatus[index] === "success" && (
                             <CheckCircle className="w-5 h-5 text-green-500" />
                           )}
-                          
-                          {uploadStatus[index] === 'error' && (
+
+                          {uploadStatus[index] === "error" && (
                             <AlertCircle className="w-5 h-5 text-red-500" />
                           )}
 
@@ -245,6 +262,6 @@ export default function UploadPage() {
           )}
         </motion.div>
       </div>
-    </AppLayout>
+    </MainTemplate>
   );
 }

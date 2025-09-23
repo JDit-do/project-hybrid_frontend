@@ -1,7 +1,8 @@
-import React from 'react';
-import { cn } from '@/shared/lib/utils';
-import { motion } from 'framer-motion';
-import { Heart, MoreVertical, Download, Share2 } from 'lucide-react';
+import React from "react";
+import { cn } from "@/shared/lib/utils";
+import { motion } from "framer-motion";
+import { Heart, MoreVertical, Download, Share2 } from "lucide-react";
+import Image from "next/image";
 
 interface ImageCardProps {
   src: string;
@@ -17,63 +18,62 @@ interface ImageCardProps {
   onShare?: () => void;
   onClick?: () => void;
   className?: string;
-  variant?: 'default' | 'compact' | 'featured';
-  size?: 'sm' | 'md' | 'lg';
+  variant?: "default" | "compact" | "featured";
+  size?: "sm" | "md" | "lg";
 }
 
 const ImageCard = React.forwardRef<HTMLDivElement, ImageCardProps>(
-  ({
-    src,
-    alt,
-    title,
-    description,
-    date,
-    tags = [],
-    isLiked = false,
-    onLike,
-    onMore,
-    onDownload,
-    onShare,
-    onClick,
-    className,
-    variant = 'default',
-    size = 'md',
-    ...props
-  }, ref) => {
+  (
+    {
+      src,
+      alt,
+      title,
+      description,
+      date,
+      tags = [],
+      isLiked = false,
+      onLike,
+      onMore,
+      onDownload,
+      onShare,
+      onClick,
+      className,
+      variant = "default",
+      size = "md",
+      ...props
+    },
+    ref
+  ) => {
     const variants = {
-      default: 'image-card',
-      compact: 'image-card image-card--compact',
-      featured: 'image-card image-card--featured'
+      default: "image-card",
+      compact: "image-card image-card--compact",
+      featured: "image-card image-card--featured",
     };
 
     const sizes = {
-      sm: 'image-card--sm',
-      md: 'image-card--md',
-      lg: 'image-card--lg'
+      sm: "image-card--sm",
+      md: "image-card--md",
+      lg: "image-card--lg",
     };
 
     return (
       <motion.div
         ref={ref}
-        className={cn(
-          variants[variant],
-          sizes[size],
-          className
-        )}
+        className={cn(variants[variant], sizes[size], className)}
         onClick={onClick}
         whileHover={{ y: -8, scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
-        transition={{ duration: 0.2, ease: 'easeOut' }}
+        transition={{ duration: 0.2, ease: "easeOut" }}
         {...props}
       >
         <div className="image-card__container">
-          <img
+          <Image
             src={src}
             alt={alt}
             className="image-card__image"
             loading="lazy"
           />
-          
+
           {/* Image Overlay */}
           <div className="image-card__overlay">
             <div className="image-card__actions">
@@ -84,15 +84,18 @@ const ImageCard = React.forwardRef<HTMLDivElement, ImageCardProps>(
                     onLike();
                   }}
                   className={cn(
-                    'image-card__action',
-                    isLiked && 'image-card__action--active'
+                    "image-card__action",
+                    isLiked && "image-card__action--active"
                   )}
-                  aria-label={isLiked ? '좋아요 취소' : '좋아요'}
+                  aria-label={isLiked ? "좋아요 취소" : "좋아요"}
                 >
-                  <Heart className="w-4 h-4" fill={isLiked ? 'currentColor' : 'none'} />
+                  <Heart
+                    className="w-4 h-4"
+                    fill={isLiked ? "currentColor" : "none"}
+                  />
                 </button>
               )}
-              
+
               {onDownload && (
                 <button
                   onClick={(e) => {
@@ -105,7 +108,7 @@ const ImageCard = React.forwardRef<HTMLDivElement, ImageCardProps>(
                   <Download className="w-4 h-4" />
                 </button>
               )}
-              
+
               {onShare && (
                 <button
                   onClick={(e) => {
@@ -118,7 +121,7 @@ const ImageCard = React.forwardRef<HTMLDivElement, ImageCardProps>(
                   <Share2 className="w-4 h-4" />
                 </button>
               )}
-              
+
               {onMore && (
                 <button
                   onClick={(e) => {
@@ -154,15 +157,11 @@ const ImageCard = React.forwardRef<HTMLDivElement, ImageCardProps>(
         {/* Content */}
         {(title || description || date) && (
           <div className="image-card__content">
-            {title && (
-              <h3 className="image-card__title">{title}</h3>
-            )}
+            {title && <h3 className="image-card__title">{title}</h3>}
             {description && (
               <p className="image-card__description">{description}</p>
             )}
-            {date && (
-              <p className="image-card__date">{date}</p>
-            )}
+            {date && <p className="image-card__date">{date}</p>}
           </div>
         )}
       </motion.div>
@@ -170,12 +169,6 @@ const ImageCard = React.forwardRef<HTMLDivElement, ImageCardProps>(
   }
 );
 
-ImageCard.displayName = 'ImageCard';
+ImageCard.displayName = "ImageCard";
 
 export default ImageCard;
-
-
-
-
-
-

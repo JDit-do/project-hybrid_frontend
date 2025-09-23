@@ -1,13 +1,11 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import { Card, CardContent } from '@/shared/ui/molecules/Card';
-import { Image as ImageType } from '@/entities/image/model/types';
-import OptimizedImage from '@/shared/ui/atoms/OptimizedImage';
+import Image from "next/image";
+import { Image as ImageType } from "@/entities/image/model/types";
 
 interface ImageGridProps {
   images: ImageType[];
-  viewMode: 'grid' | 'list';
+  viewMode: "grid" | "list";
   onImageClick: (image: ImageType) => void;
   lastImageRef?: (node: HTMLDivElement | null) => void;
 }
@@ -18,7 +16,7 @@ export default function ImageGrid({
   onImageClick,
   lastImageRef,
 }: ImageGridProps) {
-  if (viewMode === 'grid') {
+  if (viewMode === "grid") {
     return (
       <div className="image-grid-enhanced">
         {images.map((image, index) => (

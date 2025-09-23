@@ -1,15 +1,4 @@
-import {
-  Image,
-  ImageFilters,
-  ImagePagination,
-} from "@/entities/image/model/types";
-import {
-  getAllImage, // Test - 제거 예정
-  getImages,
-  getImage,
-  updateImage,
-  deleteImage,
-} from "@/entities/image/api/imageApi";
+import { Image } from "@/entities/image/model/types";
 
 export interface GalleryState {
   images: Image[];
@@ -137,12 +126,12 @@ export class GalleryService {
 
     try {
       // UI 테스트를 위해 API 호출 주석 처리
-      console.log('GalleryService.loadImages - UI 테스트용 Mock 응답');
-      
+      console.log("GalleryService.loadImages - UI 테스트용 Mock 응답");
+
       // Mock 데이터로 대체
       const mockResult = {
         images: [],
-        pagination: { hasMore: false }
+        pagination: { hasMore: false },
       };
 
       this.clearLoadingTimeout();
@@ -224,8 +213,8 @@ export class GalleryService {
   async deleteImage(imageId: string): Promise<void> {
     try {
       // UI 테스트를 위해 API 호출 주석 처리
-      console.log('GalleryService.deleteImage - UI 테스트용 Mock 응답');
-      
+      console.log("GalleryService.deleteImage - UI 테스트용 Mock 응답");
+
       // Mock 삭제 로직
       const updatedImages = this.state.images.filter(
         (img) => img.id !== imageId
@@ -257,10 +246,13 @@ export class GalleryService {
   async updateImage(imageId: string, updates: Partial<Image>): Promise<void> {
     try {
       // UI 테스트를 위해 API 호출 주석 처리
-      console.log('GalleryService.updateImage - UI 테스트용 Mock 응답');
-      
+      console.log("GalleryService.updateImage - UI 테스트용 Mock 응답");
+
       // Mock 업데이트 로직
-      const updatedImage = { ...this.state.images.find(img => img.id === imageId), ...updates } as Image;
+      const updatedImage = {
+        ...this.state.images.find((img) => img.id === imageId),
+        ...updates,
+      } as Image;
       const updatedImages = this.state.images.map((img) =>
         img.id === imageId ? updatedImage : img
       );
@@ -288,10 +280,10 @@ export class GalleryService {
   }
 
   // Get single image
-  async getImage(imageId: string): Promise<Image | null> {
+  async getImage(): Promise<Image | null> {
     try {
       // UI 테스트를 위해 API 호출 주석 처리
-      console.log('GalleryService.getImage - UI 테스트용 Mock 응답');
+      console.log("GalleryService.getImage - UI 테스트용 Mock 응답");
       return null;
 
       /*

@@ -1,16 +1,10 @@
 import Link from "next/link";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import ModernGalleryPage from "./ModernGalleryPage";
 
 /**
  * 갤러리 페이지 - Server Component
  * 헤더와 레이아웃은 서버에서 렌더링
  */
 export default async function GalleryPage() {
-  // 서버에서 session 가져오기
-  const session = await getServerSession(authOptions);
-
   return (
     <div className="min-h-screen bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -42,9 +36,6 @@ export default async function GalleryPage() {
             </Link>
           </div>
         </div>
-
-        {/* 갤러리 콘텐츠 */}
-        <ModernGalleryPage session={session} />
       </div>
     </div>
   );

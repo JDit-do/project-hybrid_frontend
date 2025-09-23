@@ -1,8 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: "standalone",
-  // eslint: { ignoreDuringBuilds: true },
+  eslint: { 
+    ignoreDuringBuilds: false,
+    dirs: ['src']
+  },
   // typescript: { ignoreBuildErrors: true },
   images: {
     domains: [

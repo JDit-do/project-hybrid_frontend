@@ -2,7 +2,7 @@ import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
 
 export default withAuth(
-  function middleware(req) {
+  function middleware(_req) {
     // 토큰이 유효한 경우 요청을 계속 진행
     return NextResponse.next();
   },

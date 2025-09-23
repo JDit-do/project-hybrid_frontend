@@ -1,22 +1,22 @@
-'use client';
+"use client";
 
-import { useState, useCallback, useRef, useEffect } from 'react';
-import { Image } from '@/entities/image/model/types';
-import { GalleryService, GalleryState, GalleryOptions } from './GalleryService';
+import { useState, useCallback, useRef, useEffect } from "react";
+import { Image } from "@/entities/image/model/types";
+import { GalleryService, GalleryState, GalleryOptions } from "./GalleryService";
 
 export function useGallery(options: GalleryOptions = {}) {
   const [state, setState] = useState<GalleryState>(() => {
     const service = new GalleryService(options);
     return service.getState();
   });
-  
+
   const serviceRef = useRef<GalleryService | null>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
   // Initialize service
   useEffect(() => {
     serviceRef.current = new GalleryService(options);
-    
+
     // Subscribe to state changes
     const unsubscribe = serviceRef.current.subscribe((newState) => {
       setState(newState);
@@ -27,7 +27,6 @@ export function useGallery(options: GalleryOptions = {}) {
       serviceRef.current?.destroy();
     };
   }, [options?.pageSize, options?.maxRetries]); // 옵셔널 체이닝 추가
-  // eslint-disable-next-line react-hooks/exhaustive-deps
 
   // Load images
   const loadImages = useCallback(async (reset = false) => {
@@ -45,7 +44,7 @@ export function useGallery(options: GalleryOptions = {}) {
   }, []);
 
   // View mode
-  const changeViewMode = useCallback((mode: 'grid' | 'list') => {
+  const changeViewMode = useCallback((mode: "grid" | "list") => {
     serviceRef.current?.changeViewMode(mode);
   }, []);
 
@@ -60,9 +59,12 @@ export function useGallery(options: GalleryOptions = {}) {
   }, []);
 
   // Update image
-  const handleUpdateImage = useCallback(async (imageId: string, updates: Partial<Image>) => {
-    await serviceRef.current?.updateImage(imageId, updates);
-  }, []);
+  const handleUpdateImage = useCallback(
+    async (imageId: string, updates: Partial<Image>) => {
+      await serviceRef.current?.updateImage(imageId, updates);
+    },
+    []
+  );
 
   // Error handling
   const clearError = useCallback(() => {
@@ -85,16 +87,16 @@ export function useGallery(options: GalleryOptions = {}) {
     viewMode: state.viewMode,
     selectedImage: state.selectedImage,
     isInitialLoad: state.isInitialLoad,
-    
+
     // Error state
     errorState: {
       hasError: !!state.error,
-      message: state.error?.message || '',
+      message: state.error?.message || "",
       code: state.error?.name,
       retryCount: state.retryCount,
     },
     canRetry: canRetry(),
-    
+
     // Actions
     loadImages,
     loadMore,
@@ -105,7 +107,7 @@ export function useGallery(options: GalleryOptions = {}) {
     updateImage: handleUpdateImage,
     retry,
     clearError,
-    
+
     // Refs for intersection observer
     observerRef,
   };

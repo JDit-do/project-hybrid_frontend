@@ -24,7 +24,9 @@ const authLink = new SetContextLink(async (prevContext) => {
       },
     };
   } catch (e) {
-    return { headers: prevContext?.headers as Record<string, string> | undefined };
+    return {
+      headers: prevContext?.headers as Record<string, string> | undefined,
+    };
   }
 });
 

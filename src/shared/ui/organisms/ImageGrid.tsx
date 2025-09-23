@@ -3,7 +3,7 @@ import { cn } from "@/shared/lib/utils";
 import ImageGridEmpty from "@/shared/ui/organisms/ImageGridEmpty";
 import ImageGridItems from "@/shared/ui/organisms/ImageGridItems";
 
-interface ImageData {
+export interface ImageData {
   id: string;
   src: string;
   alt: string;

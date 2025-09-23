@@ -2,11 +2,11 @@
 
 import { useRef, useState } from "react";
 
-import { uploadImage as uploadImageAction } from "@/app/(protected)/upload/actions";
 import DropzoneUpload from "@/shared/ui/molecules/DropzoneUpload";
 import ModalHeader from "@/shared/ui/molecules/ModalHeader";
 
 import style from "./index.module.scss";
+import Image from "next/image";
 
 interface UploadModalProps {
   open: boolean;
@@ -14,9 +14,12 @@ interface UploadModalProps {
   onUploaded?: () => void;
 }
 
-export default function UploadModal({ open, onClose, onUploaded }: UploadModalProps) {
+export default function UploadModal({
+  open,
+  onClose,
+  onUploaded,
+}: UploadModalProps) {
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [dragActive, setDragActive] = useState(false);
   const [items, setItems] = useState<
     { id: string; name: string; progress: number; previewUrl?: string }[]
   >([]);
@@ -89,22 +92,59 @@ export default function UploadModal({ open, onClose, onUploaded }: UploadModalPr
     let completedCount = 0;
     for (const { id, file } of selectedFiles) {
       try {
-        const formData = new FormData();
-        formData.append("file", file);
-        const result = await uploadImageAction(formData);
-        if (result?.success) {
-          setItems((prev) =>
-            prev.map((it) => (it.id === id ? { ...it, progress: 100 } : it))
-          );
-          completedCount += 1;
-        } else {
-          setItems((prev) =>
-            prev.map((it) => (it.id === id ? { ...it, progress: 0 } : it))
-          );
+        // 1. 프리사인 URL 요청
+        const presignResponse = await fetch("/api/presign", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            fileName: file.name,
+            contentType: file.type,
+          }),
+        });
+
+        if (!presignResponse.ok) {
+          throw new Error(`프리사인 URL 요청 실패: ${presignResponse.status}`);
         }
-      } catch (e) {
+
+        const presignData = await presignResponse.json();
+        if (!presignData.success) {
+          throw new Error(presignData.message || "프리사인 URL 요청 실패");
+        }
+
+        const { uploadUrl, key: _key } = presignData.data;
+
+        // 2. S3에 직접 업로드
+        const uploadResponse = await fetch(uploadUrl, {
+          method: "PUT",
+          body: file,
+          headers: {
+            "Content-Type": file.type,
+          },
+        });
+
+        if (!uploadResponse.ok) {
+          throw new Error(`S3 업로드 실패: ${uploadResponse.status}`);
+        }
+
+        // 3. 업로드 완료 처리
+        setItems((prev) =>
+          prev.map((it) => (it.id === id ? { ...it, progress: 100 } : it))
+        );
+        completedCount += 1;
+        setMsg(
+          `상태: ${completedCount}/${selectedFiles.length}개 파일 업로드 완료`
+        );
+      } catch (error) {
+        console.error("업로드 에러:", error);
         setItems((prev) =>
           prev.map((it) => (it.id === id ? { ...it, progress: 0 } : it))
+        );
+        setMsg(
+          `상태: 업로드 실패 - ${
+            error instanceof Error ? error.message : "알 수 없는 오류"
+          }`
         );
       }
     }
@@ -204,16 +244,24 @@ export default function UploadModal({ open, onClose, onUploaded }: UploadModalPr
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(4, 1fr)",
-            gap: 8,
+            gap: 12,
             padding: "16px 24px",
             overflowY: "auto",
             minHeight: 200,
+            maxHeight: 300,
           }}
         >
           {items.map((it) => (
             <div
               key={it.id}
-              style={{ display: "flex", flexDirection: "column", gap: 6 }}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 6,
+                // aspectRatio: "1",
+                minHeight: 0,
+                overflow: "hidden",
+              }}
             >
               {it.previewUrl ? (
                 <div
@@ -222,15 +270,17 @@ export default function UploadModal({ open, onClose, onUploaded }: UploadModalPr
                     borderRadius: 8,
                     overflow: "hidden",
                     background: "#1f1f1f",
-                    height: 90,
+                    // height: "100%",
+                    maxHeight: "80px",
+                    width: "100%",
                   }}
                 >
-                  <img
+                  <Image
                     src={it.previewUrl}
                     alt={it.name}
+                    width={160}
+                    height={160}
                     style={{
-                      width: "100%",
-                      height: "100%",
                       objectFit: "cover",
                     }}
                   />
@@ -259,17 +309,24 @@ export default function UploadModal({ open, onClose, onUploaded }: UploadModalPr
                 </div>
               ) : (
                 <div
-                  style={{ borderRadius: 8, background: "#1f1f1f", height: 90 }}
+                  style={{
+                    borderRadius: 8,
+                    background: "#1f1f1f",
+                    height: "100%",
+                    width: "100%",
+                  }}
                 />
               )}
               <div
                 title={it.name}
                 style={{
-                  fontSize: 12,
+                  fontSize: 11,
                   color: "#ddd",
                   whiteSpace: "nowrap",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
+                  lineHeight: 1.2,
+                  maxWidth: "100%",
                 }}
               >
                 {it.name}

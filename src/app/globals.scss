@@ -76,6 +76,81 @@ video {
   height: auto;
 }
 
+/* Empty State Styles — 빈 상태 UI 스타일 */
+.image-grid__empty,
+.dashboard-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+.image-grid__empty-content,
+.dashboard-empty__content {
+  text-align: center;
+  max-width: 400px;
+}
+
+.image-grid__empty-icon,
+.dashboard-empty__icon {
+  margin: 0 auto var(--spacing-large);
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-grid__empty-title,
+.dashboard-empty__title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-foreground);
+  margin-bottom: var(--spacing-small);
+}
+
+.image-grid__empty-description,
+.dashboard-empty__description {
+  font-size: 16px;
+  color: var(--color-muted);
+  margin-bottom: var(--spacing-xlarge);
+  line-height: 1.5;
+}
+
+.dashboard-empty__actions {
+  display: flex;
+  gap: var(--spacing-small);
+  justify-content: center;
+}
+
+.dashboard-empty__upload-button {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-large) var(--spacing-xlarge);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: var(--radius-large);
+  color: white !important;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+
+  svg {
+    width: 24px;
+    * {
+      color: #fff !important;
+    }
+  }
+}
+
+.dashboard-empty__upload-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
 // 스크롤
 *::-webkit-scrollbar {
   width: 10px;
@@ -105,4 +180,8 @@ main {
   &::-webkit-scrollbar-thumb:hover {
     background: rgba(143, 68, 68, 0.32);
   }
+}
+
+.nextjs-toast {
+  display: none !important;
 }

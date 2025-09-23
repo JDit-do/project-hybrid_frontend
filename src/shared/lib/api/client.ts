@@ -129,38 +129,38 @@ export const restClient = new RestClient();
 // UI 테스트용 Mock 클라이언트
 export const apolloClient = {
   query: () => {
-    console.log('Apollo Client - UI 테스트용 Mock 응답');
+    console.log("Apollo Client - UI 테스트용 Mock 응답");
     return Promise.resolve({ data: null });
   },
   mutate: () => {
-    console.log('Apollo Client - UI 테스트용 Mock 응답');
+    console.log("Apollo Client - UI 테스트용 Mock 응답");
     return Promise.resolve({ data: null });
   },
 };
 
 export class RestClient {
-  constructor(baseUrl: string = '') {
-    console.log('RestClient - UI 테스트용 Mock 클라이언트');
+  constructor() {
+    console.log("RestClient - UI 테스트용 Mock 클라이언트");
   }
 
-  async get<T>(endpoint: string): Promise<T> {
-    console.log('RestClient.get - UI 테스트용 Mock 응답');
-    throw new Error('RestClient is disabled for UI testing');
+  async get<T>(): Promise<T> {
+    console.log("RestClient.get - UI 테스트용 Mock 응답");
+    throw new Error("RestClient is disabled for UI testing");
   }
 
-  async post<T>(endpoint: string, data: any): Promise<T> {
-    console.log('RestClient.post - UI 테스트용 Mock 응답');
-    throw new Error('RestClient is disabled for UI testing');
+  async post<T>(): Promise<T> {
+    console.log("RestClient.post - UI 테스트용 Mock 응답");
+    throw new Error("RestClient is disabled for UI testing");
   }
 
-  async put<T>(endpoint: string, data: any): Promise<T> {
-    console.log('RestClient.put - UI 테스트용 Mock 응답');
-    throw new Error('RestClient is disabled for UI testing');
+  async put<T>(): Promise<T> {
+    console.log("RestClient.put - UI 테스트용 Mock 응답");
+    throw new Error("RestClient is disabled for UI testing");
   }
 
-  async delete<T>(endpoint: string): Promise<T> {
-    console.log('RestClient.delete - UI 테스트용 Mock 응답');
-    throw new Error('RestClient is disabled for UI testing');
+  async delete<T>(): Promise<T> {
+    console.log("RestClient.delete - UI 테스트용 Mock 응답");
+    throw new Error("RestClient is disabled for UI testing");
   }
 }
 

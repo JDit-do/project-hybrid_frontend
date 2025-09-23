@@ -1,20 +1,17 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useImages } from '../api/useImages';
-import { useErrorHandler } from '@/shared/hooks/useErrorHandler';
+import { useErrorHandler } from '@/shared/lib/hooks/useErrorHandler';
 
-interface Image {
+// useImages에서 사용하는 Image 타입을 재사용
+type Image = {
   id: string;
   title: string;
-  description?: string;
-  thumbnail: string;
-  fullImage: string;
-  tags: string[];
+  url: string;
+  thumbnailUrl: string;
   createdAt: string;
-  updatedAt: string;
-  fileSize: number;
-  width: number;
-  height: number;
-}
+  tags: string[];
+  size: number;
+};
 
 interface GalleryOptions {
   pageSize?: number;

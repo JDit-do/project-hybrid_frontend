@@ -10,11 +10,6 @@ import Button from "@/shared/ui/atoms/Button";
 
 import style from "./indext.module.scss";
 
-interface HeaderProps {
-  onUploadClick: () => void;
-  onLogout: () => void;
-}
-
 export default function Header() {
   const { data: session } = useSession();
   const pathname = usePathname();
@@ -50,7 +45,7 @@ export default function Header() {
       <div className={style.information}>
         {isMounted && !isHiddenActionsPage && (
           <>
-            {session?.user ? (
+            {session?.user?.email ? (
               <>
                 {pathname?.startsWith("/onboarding") ? (
                   <Link href="/dashboard">

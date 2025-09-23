@@ -6,7 +6,7 @@ import DetailModal from "@/shared/ui/organisms/DetailModal";
 import { useModalStore } from "@/stores/modalStore";
 
 export default function GlobalModals() {
-  const { uploadOpen, detailOpen, detail, closeUpload, closeDetail } =
+  const { uploadOpen, detailOpen, detail, onUploadComplete, closeUpload, closeDetail } =
     useModalStore();
   const router = useRouter();
 
@@ -16,9 +16,14 @@ export default function GlobalModals() {
         open={uploadOpen}
         onClose={closeUpload}
         onUploaded={() => {
-          try {
-            router.refresh();
-          } catch {}
+          if (onUploadComplete) {
+            onUploadComplete();
+          } else {
+            // 기본 동작: 페이지 새로고침
+            try {
+              router.refresh();
+            } catch {}
+          }
         }}
       />
       <DetailModal

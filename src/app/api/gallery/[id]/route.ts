@@ -7,8 +7,11 @@ import { getToken } from "next-auth/jwt";
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  // params를 await로 처리
+  const { id } = await params;
+  
   try {
     // JWT 토큰에서 accessToken 가져오기
     const token = await getToken({ req: request });
@@ -21,7 +24,7 @@ export async function GET(
 
     // 외부 API 호출
     const baseUrl = process.env.NEXT_PUBLIC_PRESIGN_API || 'https://api.prism-memory.cloud';
-    const apiUrl = `${baseUrl}/images/${params.id}`;
+    const apiUrl = `${baseUrl}/images/${id}`;
     
     const response = await fetch(apiUrl, {
       headers: {
@@ -43,7 +46,7 @@ export async function GET(
     
     // 에러 시 목업 데이터 반환 (개발 환경)
     if (process.env.NODE_ENV === 'development') {
-      const mockImage = generateMockImage(params.id);
+      const mockImage = generateMockImage(id);
       return NextResponse.json(mockImage);
     }
     

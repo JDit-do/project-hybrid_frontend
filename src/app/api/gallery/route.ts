@@ -12,22 +12,17 @@ export async function GET(request: NextRequest) {
     if (!token || !token.accessToken) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    
+
     // 토큰 정보 로깅 (개발 환경)
     if (process.env.NODE_ENV === "development") {
       console.log("🔑 Gallery API - Token info:", {
         hasAccessToken: !!token.accessToken,
         expiresAt: token.expiresAt,
-        timeUntilExpiry: token.expiresAt ? Math.floor((token.expiresAt as number) * 1000 - Date.now()) / 1000 : 'unknown'
+        timeUntilExpiry: token.expiresAt
+          ? Math.floor((token.expiresAt as number) * 1000 - Date.now()) / 1000
+          : "unknown",
       });
     }
-
-    // 쿼리 파라미터 파싱
-    const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get("page") || "1");
-    const limit = parseInt(searchParams.get("limit") || "20");
-    const sortBy = searchParams.get("sortBy") || "createdAt";
-    const order = searchParams.get("order") || "desc";
 
     // 외부 API 호출
     const baseUrl =

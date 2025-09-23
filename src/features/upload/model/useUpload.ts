@@ -1,7 +1,12 @@
-'use client';
+"use client";
 
-import { useState, useCallback, useEffect, useRef } from 'react';
-import { UploadService, UploadState, UploadOptions, UploadProgress } from './UploadService';
+import { useState, useCallback, useEffect, useRef } from "react";
+import {
+  UploadService,
+  UploadState,
+  UploadOptions,
+  UploadProgress,
+} from "./UploadService";
 
 export type { UploadProgress };
 
@@ -10,13 +15,13 @@ export function useUpload(options: UploadOptions = {}) {
     const service = new UploadService(options);
     return service.getState();
   });
-  
+
   const serviceRef = useRef<UploadService | null>(null);
 
   // Initialize service
   useEffect(() => {
     serviceRef.current = new UploadService(options);
-    
+
     // Subscribe to state changes
     const unsubscribe = serviceRef.current.subscribe((newState) => {
       setState(newState);
@@ -27,7 +32,6 @@ export function useUpload(options: UploadOptions = {}) {
       serviceRef.current?.destroy();
     };
   }, [options?.maxFileSize]); // 함수 제거하고 필요한 것만 유지
-  // eslint-disable-next-line react-hooks/exhaustive-deps
 
   // Upload files
   const uploadFiles = useCallback(async (files: File[]) => {
@@ -65,7 +69,14 @@ export function useUpload(options: UploadOptions = {}) {
 
   // Get upload stats
   const getUploadStats = useCallback(() => {
-    return serviceRef.current?.getUploadStats() || { total: 0, success: 0, error: 0, uploading: 0 };
+    return (
+      serviceRef.current?.getUploadStats() || {
+        total: 0,
+        success: 0,
+        error: 0,
+        uploading: 0,
+      }
+    );
   }, []);
 
   return {
@@ -74,7 +85,7 @@ export function useUpload(options: UploadOptions = {}) {
     isUploading: state.isUploading,
     dragActive: state.dragActive,
     error: state.error,
-    
+
     // Actions
     uploadFiles,
     removeUpload,

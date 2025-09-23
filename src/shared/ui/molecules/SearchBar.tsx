@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { cn } from "@/shared/lib/utils";
-import { motion, AnimatePresence } from "framer-motion";
-import { Search, X, Filter, SortAsc } from "lucide-react";
+import { motion } from "framer-motion";
+import { SortAsc } from "lucide-react";
 
 interface SearchBarProps {
   value: string;
@@ -16,21 +16,8 @@ interface SearchBarProps {
 }
 
 const SearchBar = React.forwardRef<HTMLDivElement, SearchBarProps>(
-  (
-    {
-      value,
-      onChange,
-      placeholder = "이미지 검색...",
-      onFilterClick,
-      onSortClick,
-      showFilters = true,
-      showSort = true,
-      className,
-      size = "md",
-    },
-    ref
-  ) => {
-    const [isFocused, setIsFocused] = useState(false);
+  ({ onSortClick, showSort = true, className, size = "md" }, ref) => {
+    const [isFocused] = useState(false);
 
     const sizes = {
       sm: "search-bar--sm",

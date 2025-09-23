@@ -69,6 +69,18 @@ export interface RestResponse<T> {
   message?: string;
 }
 
+// GraphQL 이미지 메타데이터 타입
+export interface ImageMetadata {
+  AlbumID: string;
+  CreatedAt: string;
+  ImageSummary: string;
+  OriginalKey: string;
+  Tags: string[];
+  OriginalPresignedUrl: string;
+  ProcessedPresignedUrl: string | null;
+  __typename: 'MemoryImageMetadata';
+}
+
 
 
 

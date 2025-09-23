@@ -1,8 +1,6 @@
 "use client";
 
 import { Grid3X3, List, Search, X } from "lucide-react";
-import Button from "@/shared/ui/atoms/Button";
-import SearchInput from "@/features/search/ui/SearchInput";
 import SearchFilters from "@/features/search/ui/SearchFilters";
 import { useSearch } from "@/features/search/model/useSearch";
 import { Image } from "@/entities/image/model/types";

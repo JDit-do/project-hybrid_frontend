@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Grid3X3, List, Search, Filter } from "lucide-react";
+import { Grid3X3, List, Search } from "lucide-react";
 import { Card, CardContent } from "@/shared/ui/molecules/Card";
 import Button from "@/shared/ui/atoms/Button";
 import { Image } from "@/entities/image/model/types";
@@ -35,7 +35,6 @@ export default function ImageGallery({
   onSortChange,
 }: ImageGalleryProps) {
   const observerRef = useRef<IntersectionObserver | null>(null);
-  const lastImageRef = useRef<HTMLDivElement | null>(null);
 
   const lastImageElementRef = useCallback(
     (node: HTMLDivElement | null) => {

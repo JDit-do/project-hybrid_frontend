@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { uploadService } from '@/features/upload/api/uploadService';
+import { useRef, useState } from "react";
+import { uploadService } from "@/features/upload/api/uploadService";
 import UploadListItem from "../_molecules/UploadListItem";
 
 interface UploadModalProps {
@@ -18,14 +18,18 @@ export default function UploadModal({ open, onClose }: UploadModalProps) {
     if (!fileList || fileList.length === 0) return;
     const files = Array.from(fileList);
     // init list items
-    setItems(prev => ([
+    setItems((prev) => [
       ...prev,
-      ...files.map(f => ({ name: f.name, progress: 0 }))
-    ]));
+      ...files.map((f) => ({ name: f.name, progress: 0 })),
+    ]);
     // upload sequentially to show progress clearly
     for (const file of files) {
       await uploadService.uploadImage(file, (p) => {
-        setItems(prev => prev.map(it => it.name === file.name ? { ...it, progress: p.percentage } : it));
+        setItems((prev) =>
+          prev.map((it) =>
+            it.name === file.name ? { ...it, progress: p.percentage } : it
+          )
+        );
       });
     }
   };
@@ -37,11 +41,15 @@ export default function UploadModal({ open, onClose }: UploadModalProps) {
       <div className="cursor-modal">
         <div className="cursor-modal-header">
           <div>이미지 업로드</div>
-          <button className="cursor-modal-close" onClick={onClose}>×</button>
+          <button className="cursor-modal-close" onClick={onClose}>
+            ×
+          </button>
         </div>
         <div className="cursor-modal-hero" />
         <div className="cursor-modal-body">
-          <div className="cursor-card-title" style={{ marginBottom: 8 }}>AI가 자동으로 태깅해 드려요</div>
+          <div className="cursor-card-title" style={{ marginBottom: 8 }}>
+            AI가 자동으로 태깅해 드려요
+          </div>
           <div className="cursor-tags" style={{ marginBottom: 16 }}>
             <span className="cursor-tag">#people</span>
             <span className="cursor-tag">#travel</span>
@@ -49,22 +57,49 @@ export default function UploadModal({ open, onClose }: UploadModalProps) {
           </div>
 
           <div
-            className={`cursor-dropzone ${dragActive ? 'is-active' : ''}`}
-            onDragEnter={(e) => { e.preventDefault(); e.stopPropagation(); setDragActive(true); }}
-            onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); setDragActive(true); }}
-            onDragLeave={(e) => { e.preventDefault(); e.stopPropagation(); setDragActive(false); }}
-            onDrop={(e) => { e.preventDefault(); e.stopPropagation(); setDragActive(false); handleFiles(e.dataTransfer.files); }}
+            className={`cursor-dropzone ${dragActive ? "is-active" : ""}`}
+            onDragEnter={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setDragActive(true);
+            }}
+            onDragOver={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setDragActive(true);
+            }}
+            onDragLeave={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setDragActive(false);
+            }}
+            onDrop={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setDragActive(false);
+              handleFiles(e.dataTransfer.files);
+            }}
           >
-            여기로 이미지를 드래그&드랍 하세요<br/>
+            여기로 이미지를 드래그&드랍 하세요
+            <br />
             또는
             <div style={{ marginTop: 8 }}>
-              <button className="cursor-button" onClick={() => inputRef.current?.click()}>파일 선택</button>
+              <button
+                className="cursor-button"
+                onClick={() => inputRef.current?.click()}
+              >
+                파일 선택
+              </button>
             </div>
           </div>
 
           <div className="cursor-upload-list">
-            {items.map(item => (
-              <UploadListItem key={item.name} name={item.name} progress={item.progress} />
+            {items.map((item) => (
+              <UploadListItem
+                key={item.name}
+                name={item.name}
+                progress={item.progress}
+              />
             ))}
           </div>
 
@@ -73,7 +108,7 @@ export default function UploadModal({ open, onClose }: UploadModalProps) {
             type="file"
             accept="image/*"
             multiple
-            style={{ display: 'none' }}
+            style={{ display: "none" }}
             onChange={(e) => handleFiles(e.target.files)}
           />
         </div>
@@ -81,5 +116,3 @@ export default function UploadModal({ open, onClose }: UploadModalProps) {
     </div>
   );
 }
-
-

@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import { cn } from "@/shared/lib/utils";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import SearchBar from "@/shared/ui/molecules/SearchBar";
-import FilterGroup from "@/shared/ui/molecules/FilterGroup";
-import ViewToggle from "@/shared/ui/atoms/ViewToggle";
-import { Filter, SortAsc, Settings, Upload } from "lucide-react";
+import { Settings, Upload } from "lucide-react";
 
 interface FilterOption {
   id: string;
@@ -34,11 +32,7 @@ const GalleryHeader = React.forwardRef<HTMLDivElement, GalleryHeaderProps>(
     {
       searchQuery,
       onSearchChange,
-      selectedFilters,
-      onFiltersChange,
-      viewMode,
-      onViewModeChange,
-      filterOptions = [],
+      filterOptions: _filterOptions = [],
       onUploadClick,
       onSettingsClick,
       onSortClick,
@@ -50,14 +44,11 @@ const GalleryHeader = React.forwardRef<HTMLDivElement, GalleryHeaderProps>(
   ) => {
     const [showFilters, setShowFilters] = useState(false);
 
-    const defaultFilterOptions: FilterOption[] = [
+    const _defaultFilterOptions: FilterOption[] = [
       { id: "all", label: "전체", count: 0 },
       { id: "recent", label: "최근", count: 0 },
       { id: "tagged", label: "AI추천", count: 0 },
     ];
-
-    const filters =
-      filterOptions.length > 0 ? filterOptions : defaultFilterOptions;
 
     return (
       <div ref={ref} className={cn("gallery-header", className)}>

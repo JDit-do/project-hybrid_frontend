@@ -94,7 +94,7 @@ export default function ImageUploadModal({
           throw new Error("Failed to get presigned URL");
         }
 
-        const { uploadUrl, key } = await presignResponse.json();
+        const { uploadUrl } = await presignResponse.json();
 
         // Upload to S3
         const uploadResponse = await fetch(uploadUrl, {

@@ -3,7 +3,6 @@
 import Image from "next/image";
 
 import Tag from "@/shared/ui/atoms/Tag";
-import Button from "@/shared/ui/atoms/Button";
 
 import style from "./index.module.scss";
 

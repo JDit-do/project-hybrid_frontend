@@ -1,10 +1,5 @@
 import { Image, ImageFilters, ImagePagination } from "../model/types";
-import {
-  apiGet,
-  apiPost,
-  apiPatch,
-  apiDelete,
-} from "@/shared/lib/api/apiClient";
+import { apiGet, apiPatch, apiDelete } from "@/shared/lib/api/apiClient";
 
 export const getAllImage = async (): Promise<any> => {
   try {

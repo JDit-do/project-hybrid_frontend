@@ -1,8 +1,8 @@
-import { getServerSession } from "next-auth";
+import { getServerSession } from "next-auth/next";
 
 import { HttpLink } from "@apollo/client/link/http";
 import { ApolloClient, InMemoryCache } from "@apollo/client";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 
 import {
   GET_GALLERY_IMAGES,
@@ -20,7 +20,7 @@ export default async function DashboardPage() {
       uri: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT!,
       headers: {
         // 인증 쪽에서 권한 관련 일괄 처리
-        authorization: `Bearer ${session?.accessToken}`,
+        authorization: `Bearer ${(session as any)?.accessToken}`,
       },
       fetchOptions: { cache: "no-store" },
     }),
@@ -31,10 +31,10 @@ export default async function DashboardPage() {
     },
   });
 
-  const albumId = (session as any)?.sub as string | undefined;
+  const albumId = (session as { sub?: string })?.sub as string | undefined;
 
   let images: GalleryImageItem[] = [];
-  if (session?.accessToken && albumId) {
+  if ((session as any)?.accessToken && albumId) {
     const { data } = await client.query<GetGalleryImagesResponse>({
       query: GET_GALLERY_IMAGES,
       variables: { albumId },
@@ -51,6 +51,8 @@ export default async function DashboardPage() {
     url: img.OriginalPresignedUrl || "",
     originalData: { ...img },
   }));
+
+  // console.log("initialItems >>> ", initialItems);
 
   return <DashboardClient initialItems={initialItems} userId={albumId} />;
 }

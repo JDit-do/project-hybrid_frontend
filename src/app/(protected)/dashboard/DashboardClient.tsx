@@ -1,10 +1,10 @@
 "use client";
 
 import { useMemo, useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
 import { useModalStore } from "@/stores/modalStore";
 
 import GalleryGrid from "@/shared/ui/organisms/GalleryGrid";
+import DashboardEmpty from "@/shared/ui/organisms/DashboardEmpty";
 import apolloClient from "@/lib/apollo-client";
 import {
   GET_SORTED_IMAGES_FOR_USER,
@@ -35,14 +35,14 @@ export default function DashboardClient({
   initialItems: Item[];
   userId?: string;
 }) {
-  const router = useRouter();
   const [sort, setSort] = useState<"recent" | "title">("recent");
   const [isLoading, setIsLoading] = useState(false);
   const [rawItems, setRawItems] = useState<Item[]>(initialItems);
   const [aiCategories, setAiCategories] = useState<SortedCategory[] | null>(
     null
   );
-  const { openUpload, openDetail } = useModalStore();
+  const [isAIView, setIsAIView] = useState(false); // AI 목록 조회 상태 추적
+  const { openUpload, openDetail, closeUpload } = useModalStore();
 
   const items = useMemo(() => {
     const arr = [...rawItems];
@@ -74,6 +74,7 @@ export default function DashboardClient({
       const categories =
         data?.getSortedImagesForUser?.SortedData?.categories || [];
       setAiCategories(categories);
+      setIsAIView(true); // AI 목록 조회 상태로 설정
     } catch (err) {
       console.error("AI 정렬 실패:", err);
     } finally {
@@ -100,12 +101,72 @@ export default function DashboardClient({
         })
       );
       setRawItems(items);
+      setIsAIView(false); // 기본 목록 조회 상태로 설정
     } catch (e) {
       console.error("원본 목록 재조회 실패:", e);
     } finally {
       setIsLoading(false);
     }
   }, [userId]);
+
+  // 업로드 완료 후 목록 새로고침
+  const handleUploadComplete = useCallback(async () => {
+    closeUpload();
+
+    // 2초 후에 목록 재조회
+    setTimeout(async () => {
+      if (isAIView) {
+        // AI 목록 조회 상태라면 AI 정렬 다시 실행
+        await handleAISort();
+      } else {
+        // 기본 목록 조회 상태라면 원본 목록 재조회
+        await reloadOriginalList();
+      }
+    }, 2000);
+  }, [isAIView, handleAISort, reloadOriginalList, closeUpload]);
+
+  // 빈 상태 처리
+  if (items.length === 0) {
+    return (
+      <section className={style.wrap}>
+        <div className={style.toolbar}>
+          <div className={style.search}>
+            <div className={style.sortGroup}>
+              <span className={style.sortLabel}>정렬</span>
+              <button
+                className={`${style.sortButton} ${style.sortButtonDisabled}`}
+                disabled
+              >
+                최신순
+              </button>
+              <button
+                className={`${style.sortButton} ${style.sortButtonDisabled}`}
+                disabled
+              >
+                제목순
+              </button>
+            </div>
+            <div className={style.aiGroup}>
+              <button className={style.aiButtonPrimary} disabled>
+                AI 목록조회
+              </button>
+            </div>
+          </div>
+
+          <button
+            className={style.uploadButton}
+            onClick={() => openUpload(handleUploadComplete)}
+          >
+            업로드
+          </button>
+        </div>
+
+        <DashboardEmpty
+          onUploadClick={() => openUpload(handleUploadComplete)}
+        />
+      </section>
+    );
+  }
 
   return (
     <section className={style.wrap}>
@@ -120,6 +181,7 @@ export default function DashboardClient({
               onClick={() => {
                 if (!aiCategories) {
                   setSort("recent");
+                  setIsAIView(false); // 기본 목록 조회 상태로 설정
                 }
               }}
               disabled={!!aiCategories}
@@ -133,6 +195,7 @@ export default function DashboardClient({
               onClick={() => {
                 if (!aiCategories) {
                   setSort("title");
+                  setIsAIView(false); // 기본 목록 조회 상태로 설정
                 }
               }}
               disabled={!!aiCategories}
@@ -144,7 +207,10 @@ export default function DashboardClient({
             {aiCategories ? (
               <button
                 className={style.aiButtonSecondary}
-                onClick={() => setAiCategories(null)}
+                onClick={() => {
+                  setAiCategories(null);
+                  setIsAIView(false); // 기본 목록 조회 상태로 설정
+                }}
                 disabled={isLoading}
               >
                 일반 조회
@@ -161,7 +227,10 @@ export default function DashboardClient({
           </div>
         </div>
 
-        <button className={style.uploadButton} onClick={() => openUpload()}>
+        <button
+          className={style.uploadButton}
+          onClick={() => openUpload(handleUploadComplete)}
+        >
           업로드
         </button>
       </div>
@@ -237,18 +306,22 @@ export default function DashboardClient({
                       try {
                         const detailTarget = mapped.find((x) => x.id === id);
                         const originalKey = detailTarget?.id || id;
-                        const { data } = await apolloClient.query<GetImageByKeyResponse>({
-                          query: GET_IMAGE_BY_KEY,
-                          variables: { OriginalKey: originalKey },
-                          fetchPolicy: "no-cache",
-                        });
+                        const { data } =
+                          await apolloClient.query<GetImageByKeyResponse>({
+                            query: GET_IMAGE_BY_KEY,
+                            variables: { OriginalKey: originalKey },
+                            fetchPolicy: "no-cache",
+                          });
                         const d = data?.getImageByKey;
                         openDetail({
                           title:
-                            (d?.ImageSummary || d?.ImageName || detailTarget?.title) ??
+                            (d?.ImageSummary ||
+                              d?.ImageName ||
+                              detailTarget?.title) ??
                             undefined,
                           tags: d?.Tags || detailTarget?.tags,
-                          imageUrl: (d?.DisplayUrl || detailTarget?.url) ?? undefined,
+                          imageUrl:
+                            (d?.DisplayUrl || detailTarget?.url) ?? undefined,
                         });
                       } catch (err) {
                         console.error("이미지 상세 조회 실패:", err);

@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
-import { graphqlService } from '@/shared/api/graphqlService';
-import { GET_IMAGES } from '@/lib/graphql/queries';
+import { useState, useEffect, useCallback } from "react";
+import { ImageService } from "@/shared/lib/api/services/imageService";
+import { ImageMetadata } from "@/types/api";
 
 interface Image {
   id: string;
@@ -15,14 +15,14 @@ interface Image {
 interface UseImagesOptions {
   limit?: number;
   offset?: number;
-  sortBy?: 'newest' | 'oldest' | 'title' | 'size';
+  sortBy?: "newest" | "oldest" | "title" | "size";
   enabled?: boolean;
 }
 
 interface UseImagesResult {
   images: Image[];
   loading: boolean;
-  error: any;
+  error: Error | undefined;
   refetch: () => void;
   hasMore: boolean;
 }
@@ -30,7 +30,7 @@ interface UseImagesResult {
 export function useImages({
   limit = 20,
   offset = 0,
-  sortBy = 'newest',
+  sortBy = "newest",
   enabled = true,
 }: UseImagesOptions = {}): UseImagesResult {
   const [images, setImages] = useState<Image[]>([]);
@@ -44,16 +44,23 @@ export function useImages({
     setError(null);
 
     try {
-      const data = await graphqlService.query(GET_IMAGES, {
-        limit,
-        offset,
-        sortBy,
-      });
+      const data = await ImageService.getImages();
 
-      setImages(data?.images || []);
+      // ImageMetadata를 Image로 변환
+      const imageData: Image[] = (data?.items || []).map((item: ImageMetadata) => ({
+        id: item.OriginalKey,
+        title: item.ImageSummary,
+        url: item.OriginalPresignedUrl,
+        thumbnailUrl: item.ProcessedPresignedUrl || item.OriginalPresignedUrl,
+        createdAt: item.CreatedAt,
+        tags: item.Tags,
+        size: 0, // ImageMetadata에는 size 정보가 없음
+      }));
+
+      setImages(imageData);
     } catch (err) {
       setError(err);
-      console.error('Error fetching images:', err);
+      console.error("Error fetching images:", err);
     } finally {
       setLoading(false);
     }

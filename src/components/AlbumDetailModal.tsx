@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Download, Share2, Heart, Calendar, Tag, Edit, Trash2, Brain } from 'lucide-react';
-import Modal from '@/components/ui/modal';
-import Button from '@/components/ui/button';
+import { useState, useEffect } from "react";
+import { X, Share2, Calendar, Tag, Edit, Trash2, Brain } from "lucide-react";
+import Modal from "@/components/ui/modal";
+import Button from "@/components/ui/button";
+import Image from "next/image";
 
 interface AlbumItem {
   id: string;
@@ -29,14 +29,14 @@ interface AlbumDetailModalProps {
   onDelete?: (albumId: string) => void;
 }
 
-export default function AlbumDetailModal({ 
-  isOpen, 
-  onClose, 
+export default function AlbumDetailModal({
+  isOpen,
+  onClose,
   album,
   onEdit,
-  onDelete
+  onDelete,
 }: AlbumDetailModalProps) {
-  const [isLoading, setIsLoading] = useState(true);
+  const [, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (album) {
@@ -49,13 +49,13 @@ export default function AlbumDetailModal({
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         onClose();
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
   if (!album) return null;
@@ -65,7 +65,7 @@ export default function AlbumDetailModal({
   };
 
   const handleDelete = () => {
-    if (confirm('정말로 이 앨범을 삭제하시겠습니까?')) {
+    if (confirm("정말로 이 앨범을 삭제하시겠습니까?")) {
       onDelete?.(album.id);
       onClose();
     }
@@ -80,12 +80,12 @@ export default function AlbumDetailModal({
           url: window.location.href,
         });
       } catch (error) {
-        console.error('Share failed:', error);
+        console.error("Share failed:", error);
       }
     } else {
       // Fallback: copy to clipboard
       navigator.clipboard.writeText(window.location.href);
-      alert('링크가 클립보드에 복사되었습니다.');
+      alert("링크가 클립보드에 복사되었습니다.");
     }
   };
 
@@ -116,7 +116,7 @@ export default function AlbumDetailModal({
           <div className="p-6 border-b border-gray-200 dark:border-gray-700">
             <div className="aspect-video bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center mb-4">
               {album.coverImage ? (
-                <img
+                <Image
                   src={album.coverImage}
                   alt={album.title}
                   className="w-full h-full object-cover rounded-lg"
@@ -140,11 +140,13 @@ export default function AlbumDetailModal({
                 {album.description}
               </p>
             )}
-            
+
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div className="flex items-center text-gray-500 dark:text-gray-400">
                 <Calendar className="h-4 w-4 mr-2" />
-                <span>생성일: {new Date(album.createdAt).toLocaleDateString()}</span>
+                <span>
+                  생성일: {new Date(album.createdAt).toLocaleDateString()}
+                </span>
               </div>
               <div className="flex items-center text-gray-500 dark:text-gray-400">
                 <Tag className="h-4 w-4 mr-2" />
@@ -160,17 +162,19 @@ export default function AlbumDetailModal({
                 <Brain className="h-5 w-5 mr-2 text-blue-600" />
                 AI 분석 결과
               </h3>
-              
+
               <div className="space-y-4">
                 <div>
                   <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
                     {album.aiAnalysis.summary}
                   </p>
                   <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                    <span>신뢰도: {Math.round(album.aiAnalysis.confidence * 100)}%</span>
+                    <span>
+                      신뢰도: {Math.round(album.aiAnalysis.confidence * 100)}%
+                    </span>
                   </div>
                 </div>
-                
+
                 <div>
                   <h4 className="font-medium mb-2">분석된 카테고리:</h4>
                   <div className="flex flex-wrap gap-2">
@@ -212,19 +216,11 @@ export default function AlbumDetailModal({
         {/* Actions */}
         <div className="p-6 border-t border-gray-200 dark:border-gray-700">
           <div className="flex space-x-3">
-            <Button
-              onClick={handleEdit}
-              variant="outline"
-              className="flex-1"
-            >
+            <Button onClick={handleEdit} variant="outline" className="flex-1">
               <Edit className="h-4 w-4 mr-2" />
               편집
             </Button>
-            <Button
-              onClick={handleShare}
-              variant="outline"
-              className="flex-1"
-            >
+            <Button onClick={handleShare} variant="outline" className="flex-1">
               <Share2 className="h-4 w-4 mr-2" />
               공유
             </Button>
@@ -242,6 +238,3 @@ export default function AlbumDetailModal({
     </Modal>
   );
 }
-
-
-

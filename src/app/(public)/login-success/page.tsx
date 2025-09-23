@@ -1,5 +1,5 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import LoginSuccessClient from "./LoginSuccessClient";
 
@@ -10,7 +10,7 @@ export default async function LoginSuccessPage() {
     redirect("/login");
   }
 
-  const isFirstLogin = Boolean((session as any)?.isFirstLogin);
+  const isFirstLogin = Boolean((session as { isFirstLogin?: boolean })?.isFirstLogin);
 
   if (!isFirstLogin) {
     redirect("/onboarding");

@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { uploadImage } from "./actions";
-import { uploadImageWithToken } from "./actions-with-token";
 
 /**
  * 이미지 업로드 폼 컴포넌트
@@ -21,7 +20,13 @@ export default function UploadForm() {
   const [uploadResult, setUploadResult] = useState<{
     success: boolean;
     message?: string;
-    image?: any;
+    image?: {
+      id: string;
+      url: string;
+      title?: string;
+      description?: string;
+      createdAt: string;
+    };
     error?: string;
   } | null>(null);
 
@@ -34,10 +39,11 @@ export default function UploadForm() {
     if (process.env.NODE_ENV === "development" && session) {
       console.log("Upload Form - Session info:", {
         hasSession: !!session,
-        hasAccessToken: !!(session as any)?.accessToken,
-        accessTokenLength: (session as any)?.accessToken?.length || 0,
+        hasAccessToken: !!(session as { accessToken?: string })?.accessToken,
+        accessTokenLength:
+          (session as { accessToken?: string })?.accessToken?.length || 0,
         sessionKeys: Object.keys(session),
-        user: session.user,
+        user: session,
       });
     }
   }, [session]);
@@ -159,7 +165,8 @@ export default function UploadForm() {
                   />
                 </div>
                 <p className="text-sm text-gray-600">
-                  {file?.name} ({(file?.size! / 1024 / 1024).toFixed(1)} MB)
+                  {file?.name} ({((file?.size || 0) / 1024 / 1024).toFixed(1)}{" "}
+                  MB)
                 </p>
                 <button
                   type="button"

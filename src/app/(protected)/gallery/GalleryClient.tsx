@@ -7,11 +7,11 @@ import Link from "next/link";
 interface ImageData {
   AlbumID: string;
   CreatedAt: string;
-  ImageSummary: string;
+  ImageSummary?: string | null;
   OriginalKey: string;
-  Tags: string[];
-  OriginalPresignedUrl: string;
-  ProcessedPresignedUrl?: string;
+  Tags?: string[] | null;
+  OriginalPresignedUrl?: string | null;
+  ProcessedPresignedUrl?: string | null;
 }
 
 interface PaginationData {
@@ -30,15 +30,11 @@ interface GalleryClientProps {
  * 갤러리 클라이언트 컴포넌트 - 모던 UI 디자인
  * CSR로 상호작용 처리 (필터링, 정렬, 무한스크롤 등)
  */
-export default function GalleryClient({
-  initialImages,
-  pagination,
-}: GalleryClientProps) {
-  const [images, setImages] = useState<ImageData[]>(initialImages);
+export default function GalleryClient({ initialImages }: GalleryClientProps) {
+  const [images] = useState<ImageData[]>(initialImages);
   const [filter, setFilter] = useState<"all" | "recent" | "tagged">("all");
   const [sortBy, setSortBy] = useState<"date" | "summary" | "tags">("date");
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<ImageData | null>(null);
 
   // 필터링된 이미지 목록
   const filteredImages = images.filter((image) => {
@@ -82,34 +78,118 @@ export default function GalleryClient({
     }
   };
 
-  if (images.length === 0) {
-    return (
-      <div className="text-center py-12">
-        <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
-          <svg
-            className="w-8 h-8 text-gray-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-            />
-          </svg>
-        </div>
-        <h3 className="text-lg font-medium text-gray-900 mb-2">
-          아직 업로드된 이미지가 없습니다
-        </h3>
-        <p className="text-gray-500 mb-4">첫 번째 추억을 업로드해보세요!</p>
+  // 빈 상태 UI 렌더링
+  const renderEmptyState = (
+    message: string,
+    description: string,
+    showRefresh = true
+  ) => (
+    <div className="text-center py-12">
+      <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+        <svg
+          className="w-8 h-8 text-gray-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+          />
+        </svg>
+      </div>
+      <h3 className="text-lg font-medium text-gray-900 mb-2">{message}</h3>
+      <p className="text-gray-500 mb-4">{description}</p>
+      {showRefresh && (
         <button
           onClick={handleRefresh}
           className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
         >
           새로고침
         </button>
+      )}
+    </div>
+  );
+
+  // 전체 이미지가 없는 경우
+  if (images.length === 0) {
+    return renderEmptyState(
+      "아직 업로드된 이미지가 없습니다",
+      "첫 번째 추억을 업로드해보세요!",
+      true
+    );
+  }
+
+  // 필터링된 결과가 없는 경우
+  if (sortedImages.length === 0) {
+    const filterMessages = {
+      all: "모든 이미지",
+      recent: "최근 7일 내 이미지",
+      tagged: "태그가 있는 이미지",
+    };
+
+    return (
+      <div className="space-y-6">
+        {/* 필터 및 정렬 컨트롤 */}
+        <div className="bg-white border border-gray-200 rounded-lg p-4">
+          <div className="flex flex-wrap gap-4 items-center justify-between">
+            <div className="flex gap-2">
+              <button
+                onClick={() => setFilter("all")}
+                className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                  filter === "all"
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                전체
+              </button>
+              <button
+                onClick={() => setFilter("recent")}
+                className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                  filter === "recent"
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                최근
+              </button>
+              <button
+                onClick={() => setFilter("tagged")}
+                className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                  filter === "tagged"
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                태그됨
+              </button>
+            </div>
+
+            <div className="flex gap-2 items-center">
+              <span className="text-sm text-gray-600">정렬:</span>
+              <select
+                value={sortBy}
+                onChange={(e) =>
+                  setSortBy(e.target.value as "date" | "summary" | "tags")
+                }
+                className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="date">날짜순</option>
+                <option value="summary">요약순</option>
+                <option value="tags">태그순</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {renderEmptyState(
+          `${filterMessages[filter]}가 없습니다`,
+          "다른 필터를 선택하거나 새 이미지를 업로드해보세요.",
+          false
+        )}
       </div>
     );
   }
@@ -179,7 +259,11 @@ export default function GalleryClient({
           >
             <div className="aspect-square relative">
               <Image
-                src={image.ProcessedPresignedUrl || image.OriginalPresignedUrl}
+                src={
+                  image.ProcessedPresignedUrl ||
+                  image.OriginalPresignedUrl ||
+                  "/placeholder-image.jpg"
+                }
                 alt={image.ImageSummary || "이미지"}
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-200"

@@ -1,8 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
 
 /**
  * 이미지 업로드 Server Action
@@ -10,7 +10,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 export async function uploadImage(formData: FormData) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session || !session.accessToken) {
+    if (!session || !(session as any).accessToken) {
       throw new Error("Unauthorized - No Access Session");
     }
 
@@ -35,7 +35,7 @@ export async function uploadImage(formData: FormData) {
     const presignedResponse = await fetch(API_GATEWAY_PRESIGNED_URL, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${session.accessToken}`,
+        Authorization: `Bearer ${(session as any).accessToken}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -95,8 +95,8 @@ export async function uploadImage(formData: FormData) {
         image: {
           id: `image-${Date.now()}`,
           url: `https://picsum.photos/400/400?random=${Date.now()}`,
-          title: formData.get("title") || "업로드된 이미지",
-          description: formData.get("description") || "",
+          title: String(formData.get("title") || "업로드된 이미지"),
+          description: String(formData.get("description") || ""),
           createdAt: new Date().toISOString(),
         },
         message: "이미지가 성공적으로 업로드되었습니다. (개발 모드)",

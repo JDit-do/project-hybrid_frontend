@@ -1,4 +1,8 @@
-import { Account } from "next-auth";
+interface OAuthAccountLike {
+  access_token?: string;
+  refresh_token?: string;
+  expires_at?: number;
+}
 
 /**
  * 토큰 관리 서비스
@@ -16,7 +20,7 @@ export class TokenService {
   /**
    * Account에서 토큰 정보 추출
    */
-  static extractTokensFromAccount(account: Account) {
+  static extractTokensFromAccount(account: OAuthAccountLike) {
     return {
       accessToken: account.access_token,
       refreshToken: account.refresh_token,

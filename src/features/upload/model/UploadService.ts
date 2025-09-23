@@ -1,7 +1,7 @@
 export interface UploadProgress {
   file: File;
   progress: number;
-  status: 'uploading' | 'success' | 'error';
+  status: "uploading" | "success" | "error";
   error?: string;
   id: string;
 }
@@ -30,7 +30,12 @@ export class UploadService {
       onSuccess: options.onSuccess || (() => {}),
       onError: options.onError || (() => {}),
       maxFileSize: options.maxFileSize || 10 * 1024 * 1024, // 10MB
-      allowedTypes: options.allowedTypes || ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
+      allowedTypes: options.allowedTypes || [
+        "image/jpeg",
+        "image/png",
+        "image/webp",
+        "image/gif",
+      ],
     };
 
     this.state = {
@@ -48,7 +53,7 @@ export class UploadService {
   }
 
   private notifyObservers(): void {
-    this.observers.forEach(observer => observer(this.state));
+    this.observers.forEach((observer) => observer(this.state));
   }
 
   // Observer pattern for React integration
@@ -77,7 +82,7 @@ export class UploadService {
     const validFiles: File[] = [];
     const errors: string[] = [];
 
-    files.forEach(file => {
+    files.forEach((file) => {
       // Check file type
       if (!this.options.allowedTypes.includes(file.type)) {
         errors.push(`${file.name}: 지원하지 않는 파일 형식입니다.`);
@@ -86,7 +91,11 @@ export class UploadService {
 
       // Check file size
       if (file.size > this.options.maxFileSize) {
-        errors.push(`${file.name}: 파일 크기가 너무 큽니다. (최대 ${this.options.maxFileSize / 1024 / 1024}MB)`);
+        errors.push(
+          `${file.name}: 파일 크기가 너무 큽니다. (최대 ${
+            this.options.maxFileSize / 1024 / 1024
+          }MB)`
+        );
         return;
       }
 
@@ -94,59 +103,32 @@ export class UploadService {
     });
 
     if (validFiles.length === 0) {
-      throw new Error('유효한 파일이 없습니다.\n' + errors.join('\n'));
+      throw new Error("유효한 파일이 없습니다.\n" + errors.join("\n"));
     }
 
     if (errors.length > 0) {
-      console.warn('파일 검증 경고:', errors);
+      console.warn("파일 검증 경고:", errors);
     }
 
     return validFiles;
-  }
-
-  // Get presigned URL
-  private async getPresignedUrl(file: File): Promise<{ uploadUrl: string; key: string }> {
-    // UI 테스트를 위해 API 호출 주석 처리
-    console.log('UploadService.getPresignedUrl - UI 테스트용 Mock 응답');
-    throw new Error('Upload API is disabled for UI testing');
-
-    /*
-    const response = await fetch('/api/presign', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        fileName: file.name,
-        contentType: file.type,
-      }),
-      credentials: 'include',
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to get presigned URL');
-    }
-
-    return response.json();
-    */
   }
 
   // Upload single file
   private async uploadSingleFile(upload: UploadProgress): Promise<boolean> {
     try {
       // UI 테스트를 위해 API 호출 주석 처리
-      console.log('UploadService.uploadSingleFile - UI 테스트용 Mock 응답');
-      
+      console.log("UploadService.uploadSingleFile - UI 테스트용 Mock 응답");
+
       // Mock 업로드 시뮬레이션
       this.updateUploadProgress(upload.id, 10);
-      await new Promise(resolve => setTimeout(resolve, 500)); // 0.5초 지연
-      
+      await new Promise((resolve) => setTimeout(resolve, 500)); // 0.5초 지연
+
       this.updateUploadProgress(upload.id, 50);
-      await new Promise(resolve => setTimeout(resolve, 500)); // 0.5초 지연
-      
+      await new Promise((resolve) => setTimeout(resolve, 500)); // 0.5초 지연
+
       this.updateUploadProgress(upload.id, 100);
-      this.updateUploadStatus(upload.id, 'success', 100);
-      
+      this.updateUploadStatus(upload.id, "success", 100);
+
       return true;
 
       /*
@@ -178,12 +160,12 @@ export class UploadService {
       return true;
       */
     } catch (error) {
-      console.error('Upload error:', error);
+      console.error("Upload error:", error);
       this.updateUploadStatus(
-        upload.id, 
-        'error', 
+        upload.id,
+        "error",
         upload.progress,
-        error instanceof Error ? error.message : 'Upload failed'
+        error instanceof Error ? error.message : "Upload failed"
       );
       return false;
     }
@@ -192,25 +174,30 @@ export class UploadService {
   // Update upload progress
   private updateUploadProgress(id: string, progress: number): void {
     this.setState({
-      uploads: this.state.uploads.map(upload =>
+      uploads: this.state.uploads.map((upload) =>
         upload.id === id ? { ...upload, progress } : upload
-      )
+      ),
     });
   }
 
   // Update upload status
   private updateUploadStatus(
-    id: string, 
-    status: UploadProgress['status'], 
+    id: string,
+    status: UploadProgress["status"],
     progress?: number,
     error?: string
   ): void {
     this.setState({
-      uploads: this.state.uploads.map(upload =>
-        upload.id === id 
-          ? { ...upload, status, ...(progress !== undefined && { progress }), ...(error && { error }) }
+      uploads: this.state.uploads.map((upload) =>
+        upload.id === id
+          ? {
+              ...upload,
+              status,
+              ...(progress !== undefined && { progress }),
+              ...(error && { error }),
+            }
           : upload
-      )
+      ),
     });
   }
 
@@ -218,22 +205,22 @@ export class UploadService {
   async uploadFiles(files: File[]): Promise<void> {
     try {
       const validFiles = this.validateFiles(files);
-      
-      const newUploads: UploadProgress[] = validFiles.map(file => ({
+
+      const newUploads: UploadProgress[] = validFiles.map((file) => ({
         id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         file,
         progress: 0,
-        status: 'uploading'
+        status: "uploading",
       }));
 
       this.setState({
         uploads: [...this.state.uploads, ...newUploads],
         isUploading: true,
-        error: null
+        error: null,
       });
 
       const results = await Promise.all(
-        newUploads.map(upload => this.uploadSingleFile(upload))
+        newUploads.map((upload) => this.uploadSingleFile(upload))
       );
 
       const successCount = results.filter(Boolean).length;
@@ -244,12 +231,15 @@ export class UploadService {
       }
 
       if (successCount < validFiles.length) {
-        const error = new Error(`${validFiles.length - successCount}개 파일 업로드 실패`);
+        const error = new Error(
+          `${validFiles.length - successCount}개 파일 업로드 실패`
+        );
         this.setState({ error });
         this.options.onError?.(error);
       }
     } catch (error) {
-      const uploadError = error instanceof Error ? error : new Error('Upload failed');
+      const uploadError =
+        error instanceof Error ? error : new Error("Upload failed");
       this.setState({ error: uploadError });
       this.options.onError?.(uploadError);
     } finally {
@@ -260,7 +250,7 @@ export class UploadService {
   // Remove upload
   removeUpload(id: string): void {
     this.setState({
-      uploads: this.state.uploads.filter(upload => upload.id !== id)
+      uploads: this.state.uploads.filter((upload) => upload.id !== id),
     });
   }
 
@@ -270,16 +260,16 @@ export class UploadService {
       uploads: [],
       isUploading: false,
       dragActive: false,
-      error: null
+      error: null,
     });
   }
 
   // Retry failed upload
   async retryUpload(id: string): Promise<void> {
-    const upload = this.state.uploads.find(u => u.id === id);
-    if (!upload || upload.status !== 'error') return;
+    const upload = this.state.uploads.find((u) => u.id === id);
+    if (!upload || upload.status !== "error") return;
 
-    this.updateUploadStatus(id, 'uploading', 0);
+    this.updateUploadStatus(id, "uploading", 0);
     await this.uploadSingleFile(upload);
   }
 
@@ -287,9 +277,9 @@ export class UploadService {
   handleDrag(e: React.DragEvent): void {
     e.preventDefault();
     e.stopPropagation();
-    if (e.type === 'dragenter' || e.type === 'dragover') {
+    if (e.type === "dragenter" || e.type === "dragover") {
       this.setState({ dragActive: true });
-    } else if (e.type === 'dragleave') {
+    } else if (e.type === "dragleave") {
       this.setState({ dragActive: false });
     }
   }
@@ -298,7 +288,7 @@ export class UploadService {
     e.preventDefault();
     e.stopPropagation();
     this.setState({ dragActive: false });
-    
+
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       this.uploadFiles(Array.from(e.dataTransfer.files));
     }
@@ -314,9 +304,9 @@ export class UploadService {
     const uploads = this.state.uploads;
     return {
       total: uploads.length,
-      success: uploads.filter(u => u.status === 'success').length,
-      error: uploads.filter(u => u.status === 'error').length,
-      uploading: uploads.filter(u => u.status === 'uploading').length,
+      success: uploads.filter((u) => u.status === "success").length,
+      error: uploads.filter((u) => u.status === "error").length,
+      uploading: uploads.filter((u) => u.status === "uploading").length,
     };
   }
 
