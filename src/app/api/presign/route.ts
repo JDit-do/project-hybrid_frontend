@@ -1,49 +1,61 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";
+import { NextRequest } from "next/server";
+import { getAuthenticatedUser } from "@/shared/lib/api/auth";
+import { withApiHandler } from "@/shared/lib/api/response";
+import { SUCCESS_MESSAGES } from "@/shared/lib/api/constants";
+import { apiConfig } from "@/shared/lib/config/api";
 
-function decodeJwtNoVerify(jwt: string) {
-  const [, payloadB64] = jwt.split(".");
-  const json = Buffer.from(
-    payloadB64.replace(/-/g, "+").replace(/_/g, "/"),
-    "base64"
-  ).toString("utf8");
-  return JSON.parse(json);
+const PRESIGN_API_ENDPOINT = apiConfig.presignApi;
+
+if (!PRESIGN_API_ENDPOINT) {
+  throw new Error("Presign API endpoint is not configured");
 }
 
-export async function POST(req: NextRequest) {
-  const jwt = await getToken({ req, secureCookie: false });
-  const access = jwt?.access_token;
+export async function POST(request: NextRequest) {
+  return withApiHandler(async () => {
+    const { user, error } = await getAuthenticatedUser();
+    if (error) {
+      throw new Error("Unauthorized");
+    }
 
-  if (!access)
-    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+    const { fileName, contentType } = await request.json();
 
-  const claims = decodeJwtNoVerify(access);
-  console.log("access_token claims >>>", {
-    iss: claims.iss,
-    aud: claims.aud ?? claims.client_id,
-    token_use: claims.token_use,
-    exp: claims.exp,
-    scope: claims.scope,
-    sub: claims.sub,
-  });
+    if (!fileName || !contentType) {
+      throw new Error("Bad Request: fileName and contentType are required");
+    }
 
-  const body = await req.text();
+    // 개발 환경에서는 로컬에서 프리사인 URL 생성 (주석처리)
+    // if (process.env.NODE_ENV === 'development') {
+    //   const mockUploadUrl = `https://memory-images-originals-dev.s3.amazonaws.com/album/${user.id}/${Date.now()}/${fileName}`;
+    //   const mockKey = `album/${user.id}/${Date.now()}/${fileName}`;
+    //
+    //   return {
+    //     success: true,
+    //     data: {
+    //       uploadUrl: mockUploadUrl,
+    //       key: mockKey,
+    //       fields: {
+    //         'Content-Type': contentType
+    //       }
+    //     }
+    //   };
+    // }
 
-  const r = await fetch(process.env.NEXT_PUBLIC_PRESIGN_API!, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${access}`,
-      "Content-Type": "application/json",
-    },
-    body,
-  });
+    // 프로덕션에서는 외부 API 호출
+    const response = await fetch(PRESIGN_API_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user.accessToken}`,
+      },
+      body: JSON.stringify({ fileName, contentType }),
+    });
+    console.log("PRESIGN_API_ENDPOINT >>> ", user);
 
-  const hdrs = Object.fromEntries(r.headers.entries());
-  const bodyText = await r.text();
-  console.log("GW status:", r.status, hdrs, bodyText);
+    if (!response.ok) {
+      throw new Error(`Presign API error: ${response.status}`);
+    }
 
-  return new NextResponse(bodyText, {
-    status: r.status,
-    headers: { "content-type": hdrs["content-type"] ?? "application/json" },
-  });
+    const data = await response.json();
+    return data;
+  }, SUCCESS_MESSAGES.FILE_UPLOADED);
 }

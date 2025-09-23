@@ -1,0 +1,26 @@
+.wrap {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 12px 24px 0 24px;
+}
+
+.close {
+  align-self: end;
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: #f6f0eb;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.closeRound {
+  width: 36px;
+  height: 36px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

@@ -1,0 +1,23 @@
+.wrap {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+
+  .title {
+    &_wrap {
+      display: flex;
+      align-items: end;
+      gap: 0.625rem;
+    }
+
+    &_project {
+      font-weight: 700;
+      font-size: 28px;
+      line-height: 28px;
+    }
+    &_team {
+      font-size: 16px;
+      line-height: 16px;
+    }
+  }
+}

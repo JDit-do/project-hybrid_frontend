@@ -4,7 +4,7 @@ import { getToken } from "next-auth/jwt";
 export async function POST(req: NextRequest) {
   const jwt = await getToken({ req, secureCookie: false });
 
-  const access = jwt?.access_token;
+  const access = jwt?.accessToken;
 
   if (!access)
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });

@@ -1,0 +1,412 @@
+// Modern Search Bar Component
+// 현대적이고 인터랙티브한 검색바 컴포넌트
+
+.search-bar {
+  position: relative;
+  width: 100%;
+  
+  // Search Bar Sizes
+  &--sm {
+    .search-bar__container {
+      height: 36px;
+      border-radius: $border-radius-md;
+    }
+    
+    .search-bar__input {
+      font-size: $font-size-sm;
+      padding: $spacing-2 $spacing-3 $spacing-2 $spacing-10;
+    }
+    
+    .search-bar__icon {
+      width: 14px;
+      height: 14px;
+    }
+  }
+  
+  &--md {
+    .search-bar__container {
+      height: 44px;
+      border-radius: $border-radius-lg;
+    }
+    
+    .search-bar__input {
+      font-size: $font-size-base;
+      padding: $spacing-3 $spacing-4 $spacing-3 $spacing-12;
+    }
+    
+    .search-bar__icon {
+      width: 16px;
+      height: 16px;
+    }
+  }
+  
+  &--lg {
+    .search-bar__container {
+      height: 52px;
+      border-radius: $border-radius-xl;
+    }
+    
+    .search-bar__input {
+      font-size: $font-size-lg;
+      padding: $spacing-4 $spacing-5 $spacing-4 $spacing-14;
+    }
+    
+    .search-bar__icon {
+      width: 18px;
+      height: 18px;
+    }
+  }
+}
+
+.search-bar__container {
+  position: relative;
+  background: $background;
+  border: 2px solid $border;
+  transition: all $transition-normal;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  
+  &:hover {
+    border-color: $primary-300;
+    box-shadow: $shadow-sm;
+  }
+  
+  &--focused {
+    border-color: $primary-500;
+    box-shadow: $shadow-glow-primary;
+    background: $background;
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    background: $dark-background;
+    border-color: $dark-border;
+    
+    &:hover {
+      border-color: $primary-400;
+    }
+    
+    &--focused {
+      border-color: $primary-400;
+      background: $dark-background;
+    }
+  }
+  
+  .dark & {
+    background: $dark-background;
+    border-color: $dark-border;
+    
+    &:hover {
+      border-color: $primary-400;
+    }
+    
+    &--focused {
+      border-color: $primary-400;
+      background: $dark-background;
+    }
+  }
+}
+
+.search-bar__input-wrapper {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.search-bar__input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: $foreground;
+  font-weight: $font-weight-normal;
+  line-height: $line-height-normal;
+  
+  &::placeholder {
+    color: $muted-foreground;
+    transition: color $transition-fast;
+  }
+  
+  &:focus::placeholder {
+    color: transparent;
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    color: $dark-foreground;
+    
+    &::placeholder {
+      color: $dark-muted-foreground;
+    }
+  }
+  
+  .dark & {
+    color: $dark-foreground;
+    
+    &::placeholder {
+      color: $dark-muted-foreground;
+    }
+  }
+}
+
+.search-bar__icon {
+  position: absolute;
+  left: $spacing-3;
+  color: $muted-foreground;
+  transition: color $transition-fast;
+  z-index: 10;
+  
+  &--search {
+    pointer-events: none;
+  }
+  
+  .search-bar__container--focused & {
+    color: $primary-500;
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    color: $dark-muted-foreground;
+    
+    .search-bar__container--focused & {
+      color: $primary-400;
+    }
+  }
+  
+  .dark & {
+    color: $dark-muted-foreground;
+    
+    .search-bar__container--focused & {
+      color: $primary-400;
+    }
+  }
+}
+
+.search-bar__clear {
+  position: absolute;
+  right: $spacing-3;
+  @include flex-center;
+  width: 20px;
+  height: 20px;
+  background: $muted;
+  border: none;
+  border-radius: $border-radius-full;
+  cursor: pointer;
+  transition: all $transition-fast;
+  color: $muted-foreground;
+  
+  &:hover {
+    background: $muted-foreground;
+    color: white;
+    transform: scale(1.1);
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    background: $dark-muted;
+    color: $dark-muted-foreground;
+    
+    &:hover {
+      background: $dark-muted-foreground;
+      color: white;
+    }
+  }
+  
+  .dark & {
+    background: $dark-muted;
+    color: $dark-muted-foreground;
+    
+    &:hover {
+      background: $dark-muted-foreground;
+      color: white;
+    }
+  }
+}
+
+.search-bar__actions {
+  display: flex;
+  align-items: center;
+  gap: $spacing-1;
+  padding-right: $spacing-2;
+  border-left: 1px solid $border;
+  margin-left: $spacing-2;
+  
+  @media (prefers-color-scheme: dark) {
+    border-left-color: $dark-border;
+  }
+  
+  .dark & {
+    border-left-color: $dark-border;
+  }
+}
+
+.search-bar__action {
+  @include flex-center;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  border-radius: $border-radius-md;
+  cursor: pointer;
+  transition: all $transition-fast;
+  color: $muted-foreground;
+  
+  &:hover {
+    background: $muted;
+    color: $foreground;
+    transform: scale(1.1);
+  }
+  
+  &:focus-visible {
+    outline: 2px solid $ring;
+    outline-offset: 2px;
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    color: $dark-muted-foreground;
+    
+    &:hover {
+      background: $dark-muted;
+      color: $dark-foreground;
+    }
+  }
+  
+  .dark & {
+    color: $dark-muted-foreground;
+    
+    &:hover {
+      background: $dark-muted;
+      color: $dark-foreground;
+    }
+  }
+}
+
+// Search Bar States
+.search-bar {
+  &--loading {
+    .search-bar__container {
+      position: relative;
+      
+      &::after {
+        content: '';
+        position: absolute;
+        right: $spacing-3;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 16px;
+        height: 16px;
+        border: 2px solid transparent;
+        border-top: 2px solid $primary-500;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+    }
+  }
+  
+  &--error {
+    .search-bar__container {
+      border-color: $error-500;
+      box-shadow: 0 0 0 3px rgba($error-500, 0.1);
+    }
+  }
+  
+  &--success {
+    .search-bar__container {
+      border-color: $success-500;
+      box-shadow: 0 0 0 3px rgba($success-500, 0.1);
+    }
+  }
+}
+
+// Search Bar Animations
+@keyframes search-bar-shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+.search-bar {
+  &--shake {
+    animation: search-bar-shake 0.5s ease-in-out;
+  }
+}
+
+// Search Bar Responsive Design
+@include mobile {
+  .search-bar {
+    &--lg {
+      .search-bar__container {
+        height: 44px;
+      }
+      
+      .search-bar__input {
+        font-size: $font-size-base;
+        padding: $spacing-3 $spacing-4 $spacing-3 $spacing-12;
+      }
+    }
+    
+    .search-bar__actions {
+      display: none;
+    }
+  }
+}
+
+// Dark Mode Adjustments
+@media (prefers-color-scheme: dark) {
+  .search-bar__container {
+    background: $dark-background;
+    border-color: $dark-border;
+  }
+}
+
+.dark .search-bar__container {
+  background: $dark-background;
+  border-color: $dark-border;
+}
+
+// Accessibility
+.search-bar {
+  // High contrast mode support
+  @media (prefers-contrast: high) {
+    .search-bar__container {
+      border: 3px solid currentColor;
+    }
+  }
+  
+  // Reduced motion support
+  @media (prefers-reduced-motion: reduce) {
+    .search-bar__container {
+      transition: none;
+    }
+    
+    .search-bar__icon,
+    .search-bar__clear,
+    .search-bar__action {
+      transition: none;
+      
+      &:hover {
+        transform: none;
+      }
+    }
+  }
+}
+
+// Loading Animation
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+
+
+
+
+

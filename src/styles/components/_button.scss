@@ -1,0 +1,387 @@
+// Modern Button Component
+// 현대적이고 인터랙티브한 버튼 컴포넌트
+
+.button {
+  @include button-base;
+  @include button-primary;
+  
+  // Button Sizes
+  &--xs {
+    padding: $spacing-2 $spacing-3;
+    font-size: $font-size-xs;
+    border-radius: $border-radius-md;
+  }
+  
+  &--sm {
+    padding: $spacing-2 $spacing-4;
+    font-size: $font-size-sm;
+    border-radius: $border-radius-lg;
+  }
+  
+  &--md {
+    padding: $spacing-3 $spacing-6;
+    font-size: $font-size-base;
+    border-radius: $border-radius-lg;
+  }
+  
+  &--lg {
+    padding: $spacing-4 $spacing-8;
+    font-size: $font-size-lg;
+    border-radius: $border-radius-xl;
+  }
+  
+  &--xl {
+    padding: $spacing-5 $spacing-10;
+    font-size: $font-size-xl;
+    border-radius: $border-radius-xl;
+  }
+  
+  // Button Variants
+  &--primary {
+    @include button-primary;
+  }
+  
+  &--secondary {
+    @include button-secondary;
+  }
+  
+  &--outline {
+    @include button-outline;
+  }
+  
+  &--ghost {
+    @include button-ghost;
+  }
+  
+  &--destructive {
+    @include button-base;
+    background: $gradient-error;
+    color: white;
+    box-shadow: $shadow-sm;
+    
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: $shadow-lg;
+    }
+  }
+  
+  &--gradient {
+    @include button-base;
+    background: $gradient-accent;
+    color: white;
+    box-shadow: $shadow-sm;
+    
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: $shadow-glow-accent;
+    }
+  }
+  
+  &--glass {
+    @include button-base;
+    @include glass;
+    color: $foreground;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: $shadow-lg;
+      background: rgba(255, 255, 255, 0.15);
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      color: $dark-foreground;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      
+      &:hover:not(:disabled) {
+        background: rgba(255, 255, 255, 0.05);
+      }
+    }
+    
+    .dark & {
+      color: $dark-foreground;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      
+      &:hover:not(:disabled) {
+        background: rgba(255, 255, 255, 0.05);
+      }
+    }
+  }
+  
+  &--modern {
+    @include button-base;
+    background: $gradient-dark;
+    color: white;
+    border: 1px solid $secondary-600;
+    box-shadow: $shadow-md;
+    
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: $shadow-xl;
+      border-color: $primary-500;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      background: $gradient-primary;
+      border: 1px solid $primary-600;
+    }
+    
+    .dark & {
+      background: $gradient-primary;
+      border: 1px solid $primary-600;
+    }
+  }
+  
+  // Button Content
+  &__content {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    position: relative;
+    z-index: 10;
+    transition: opacity $transition-fast;
+    
+    &--loading {
+      opacity: 0;
+    }
+  }
+  
+  // Button Spinner
+  &__spinner {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+  }
+  
+  // Button Icon
+  &__icon {
+    width: 1rem;
+    height: 1rem;
+    transition: transform $transition-fast;
+    
+    .button:hover & {
+      transform: scale(1.1);
+    }
+  }
+  
+  // Button Group
+  &-group {
+    display: inline-flex;
+    border-radius: $border-radius-lg;
+    overflow: hidden;
+    box-shadow: $shadow-sm;
+    
+    .button {
+      border-radius: 0;
+      border-right: 1px solid rgba(255, 255, 255, 0.2);
+      
+      &:first-child {
+        border-top-left-radius: $border-radius-lg;
+        border-bottom-left-radius: $border-radius-lg;
+      }
+      
+      &:last-child {
+        border-top-right-radius: $border-radius-lg;
+        border-bottom-right-radius: $border-radius-lg;
+        border-right: none;
+      }
+      
+      &:hover {
+        transform: none;
+        z-index: 1;
+      }
+    }
+  }
+  
+  // Floating Action Button
+  &--fab {
+    position: fixed;
+    bottom: $spacing-6;
+    right: $spacing-6;
+    width: 56px;
+    height: 56px;
+    border-radius: $border-radius-full;
+    padding: 0;
+    box-shadow: $shadow-lg;
+    z-index: $z-fixed;
+    
+    &:hover {
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: $shadow-xl;
+    }
+    
+    .button__icon {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+  }
+  
+  // Loading State
+  &--loading {
+    pointer-events: none;
+    
+    .button__content {
+      opacity: 0;
+    }
+    
+    .button__spinner {
+      opacity: 1;
+    }
+  }
+  
+  // Disabled State
+  &--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  
+  // Full Width
+  &--full {
+    width: 100%;
+  }
+  
+  // Rounded
+  &--rounded {
+    border-radius: $border-radius-full;
+  }
+  
+  // No Shadow
+  &--flat {
+    box-shadow: none;
+    
+    &:hover {
+      box-shadow: $shadow-sm;
+    }
+  }
+  
+  // Interactive Effects
+  &--bounce {
+    &:hover {
+      animation: bounce 0.6s ease-in-out;
+    }
+  }
+  
+  &--pulse {
+    &:hover {
+      animation: pulse 0.6s ease-in-out;
+    }
+  }
+  
+  &--glow {
+    &:hover {
+      box-shadow: $shadow-glow-primary;
+    }
+  }
+  
+  // Responsive
+  @include mobile {
+    &--lg {
+      padding: $spacing-3 $spacing-6;
+      font-size: $font-size-base;
+    }
+    
+    &--xl {
+      padding: $spacing-4 $spacing-8;
+      font-size: $font-size-lg;
+    }
+  }
+}
+
+// Button Loading Animation
+@keyframes button-loading {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.button__spinner .loading {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: button-loading 1s linear infinite;
+}
+
+// Button Ripple Effect
+.button {
+  position: relative;
+  overflow: hidden;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width $transition-slow, height $transition-slow;
+  }
+  
+  &:active::after {
+    width: 300px;
+    height: 300px;
+  }
+}
+
+// Dark Mode Adjustments
+@media (prefers-color-scheme: dark) {
+  .button {
+    &--glass {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      
+      &:hover:not(:disabled) {
+        background: rgba(255, 255, 255, 0.1);
+      }
+    }
+  }
+}
+
+.dark .button {
+  &--glass {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    
+    &:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+}
+
+// Accessibility
+.button {
+  &:focus-visible {
+    outline: 2px solid $ring;
+    outline-offset: 2px;
+  }
+  
+  // High contrast mode support
+  @media (prefers-contrast: high) {
+    border: 2px solid currentColor;
+  }
+  
+  // Reduced motion support
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+    
+    &:hover {
+      transform: none;
+    }
+    
+    &::before,
+    &::after {
+      display: none;
+    }
+  }
+}

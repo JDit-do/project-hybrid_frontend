@@ -1,0 +1,498 @@
+// Modern Mixins
+// 현대적이고 세련된 믹스인들
+
+// Responsive Breakpoints
+@mixin mobile {
+  @media (max-width: #{$breakpoint-sm - 1px}) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (min-width: #{$breakpoint-sm}) and (max-width: #{$breakpoint-md - 1px}) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: #{$breakpoint-md}) {
+    @content;
+  }
+}
+
+@mixin large-desktop {
+  @media (min-width: #{$breakpoint-lg}) {
+    @content;
+  }
+}
+
+// Flexbox Utilities
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-start {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+@mixin flex-end {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin flex-column-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+// Text Utilities
+@mixin text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@mixin text-clamp($lines: 2) {
+  display: -webkit-box;
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// Modern Button Styles
+@mixin button-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: $border-radius-lg;
+  font-weight: $font-weight-medium;
+  transition: all $transition-normal;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  font-size: $font-size-sm;
+  line-height: $line-height-none;
+  
+  &:focus-visible {
+    outline: 2px solid $ring;
+    outline-offset: 2px;
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+}
+
+@mixin button-primary {
+  @include button-base;
+  background: $gradient-primary;
+  color: white;
+  box-shadow: $shadow-sm;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left $transition-slow;
+  }
+  
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: $shadow-lg;
+    
+    &::before {
+      left: 100%;
+    }
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+@mixin button-secondary {
+  @include button-base;
+  background: $secondary-100;
+  color: $secondary-900;
+  border: 1px solid $border;
+  
+  &:hover:not(:disabled) {
+    background: $secondary-200;
+    transform: translateY(-1px);
+    box-shadow: $shadow-md;
+  }
+}
+
+@mixin button-outline {
+  @include button-base;
+  background: transparent;
+  color: $primary-600;
+  border: 1px solid $primary-600;
+  
+  &:hover:not(:disabled) {
+    background: $primary-600;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: $shadow-md;
+  }
+}
+
+@mixin button-ghost {
+  @include button-base;
+  background: transparent;
+  color: $muted-foreground;
+  
+  &:hover:not(:disabled) {
+    background: $secondary-100;
+    color: $secondary-900;
+  }
+}
+
+// Modern Card Styles
+@mixin card-base {
+  background: $background;
+  border: 1px solid $border;
+  border-radius: $border-radius-xl;
+  box-shadow: $shadow-sm;
+  transition: all $transition-normal;
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: $gradient-primary;
+    opacity: 0;
+    transition: opacity $transition-normal;
+  }
+  
+  &:hover {
+    box-shadow: $shadow-lg;
+    transform: translateY(-4px);
+    border-color: $primary-200;
+    
+    &::before {
+      opacity: 1;
+    }
+  }
+}
+
+@mixin card-elevated {
+  @include card-base;
+  box-shadow: $shadow-md;
+  
+  &:hover {
+    box-shadow: $shadow-xl;
+    transform: translateY(-6px);
+  }
+}
+
+@mixin card-glass {
+  @include card-base;
+  background: $glass-bg;
+  backdrop-filter: $glass-backdrop;
+  border: 1px solid $glass-border;
+  box-shadow: $shadow-lg;
+}
+
+// Interactive Elements
+@mixin interactive {
+  transition: all $transition-normal;
+  cursor: pointer;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-lg;
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+@mixin interactive-scale {
+  transition: transform $transition-fast;
+  cursor: pointer;
+  
+  &:hover {
+    transform: scale(1.05);
+  }
+  
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+@mixin interactive-glow {
+  transition: all $transition-normal;
+  cursor: pointer;
+  
+  &:hover {
+    box-shadow: $shadow-glow-primary;
+    transform: translateY(-2px);
+  }
+}
+
+// Loading Animations
+@mixin loading-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@mixin loading-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@mixin loading-bounce {
+  animation: bounce 1s infinite;
+}
+
+@mixin loading-shimmer {
+  background: linear-gradient(90deg, $muted 25%, $border 50%, $muted 75%);
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+// Glass Effect
+@mixin glass {
+  background: $glass-bg;
+  backdrop-filter: $glass-backdrop;
+  border: 1px solid $glass-border;
+  box-shadow: $shadow-lg;
+}
+
+@mixin glass-dark {
+  background: $dark-glass-bg;
+  backdrop-filter: $glass-backdrop;
+  border: 1px solid $dark-glass-border;
+  box-shadow: $shadow-lg;
+}
+
+// Gradient Text
+@mixin gradient-text($gradient: $gradient-primary) {
+  background: $gradient;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+// Glow Effect
+@mixin glow($color: $primary-500, $intensity: 0.3) {
+  box-shadow: 0 0 20px rgba($color, $intensity);
+}
+
+// Modern Input Styles
+@mixin input-base {
+  background-color: $input;
+  border: 1px solid $border;
+  border-radius: $border-radius-lg;
+  color: $foreground;
+  font-size: $font-size-sm;
+  padding: $spacing-3 $spacing-4;
+  transition: all $transition-fast;
+  width: 100%;
+  
+  &:focus {
+    outline: none;
+    border-color: $primary-500;
+    box-shadow: 0 0 0 3px rgba($primary-500, 0.1);
+    transform: translateY(-1px);
+  }
+  
+  &::placeholder {
+    color: $muted-foreground;
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// Modern Modal Styles
+@mixin modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: $z-modal-backdrop;
+  animation: fadeIn $transition-normal;
+}
+
+@mixin modal-content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: $background;
+  border-radius: $border-radius-xl;
+  box-shadow: $shadow-2xl;
+  z-index: $z-modal;
+  animation: slideIn $transition-normal;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+// Animations
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(-25%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// Utility Animations
+@mixin animate-fade-in {
+  animation: fadeIn $transition-normal;
+}
+
+@mixin animate-slide-up {
+  animation: slideUp $transition-normal;
+}
+
+@mixin animate-slide-down {
+  animation: slideDown $transition-normal;
+}
+
+@mixin animate-scale-in {
+  animation: scaleIn $transition-normal;
+}
+
+@mixin animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+// Dark Mode Support - Removed to fix SCSS compilation issues
+
+// Focus Styles
+@mixin focus-ring {
+  &:focus-visible {
+    outline: 2px solid $ring;
+    outline-offset: 2px;
+    border-radius: $border-radius-base;
+  }
+}
+
+// Scrollbar Styles
+@mixin custom-scrollbar {
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: $muted;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: $border;
+    border-radius: $border-radius-base;
+    transition: background $transition-fast;
+    
+    &:hover {
+      background: $muted-foreground;
+    }
+  }
+}

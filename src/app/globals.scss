@@ -1,0 +1,187 @@
+/* Global base styles and design tokens — 전역 기본 스타일과 디자인 토큰 정의 */
+
+/* CSS Custom Properties — 런타임 테마 토큰 */
+:root {
+  /* Colors — 색상 토큰 */
+  --color-background: #2c2c2c; /* 앱 배경색 (다크) */
+  --color-surface: #2c2c2c; /* 패널 배경색 */
+  --color-foreground: #f6f0eb; /* 기본 전경 텍스트 색 */
+  --color-muted: #2c2c2c; /* 보조 텍스트/아이콘 색 */
+
+  /* Radii — 모서리 반경 */
+  --radius-medium: 12px;
+  --radius-large: 16px;
+  --radius-xlarge: 24px;
+
+  /* Spacing — 여백/패딩 기준 단위 */
+  --spacing-small: 8px;
+  --spacing-medium: 12px;
+  --spacing-large: 16px;
+  --spacing-xlarge: 24px;
+
+  /* Shadows — 그림자 토큰 */
+  --shadow-elevation-large: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+/* Base reset — 경량 */
+* {
+  box-sizing: border-box;
+  font-size: 16px;
+  color: var(--color-foreground);
+  cursor: default;
+}
+html,
+body,
+h1,
+h2,
+h3,
+ul,
+button,
+p {
+  margin: 0;
+  padding: 0;
+}
+button {
+  border: none;
+}
+li {
+  list-style: none;
+}
+a {
+  text-decoration-line: none;
+}
+button,
+a,
+button *,
+a * {
+  cursor: pointer !important;
+}
+
+/* 제일 상위 부분 스타일 적용 */
+html,
+body {
+  height: 100%;
+}
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+}
+
+/* Media defaults — 이미지/미디어 반응형 처리 */
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Empty State Styles — 빈 상태 UI 스타일 */
+.image-grid__empty,
+.dashboard-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+.image-grid__empty-content,
+.dashboard-empty__content {
+  text-align: center;
+  max-width: 400px;
+}
+
+.image-grid__empty-icon,
+.dashboard-empty__icon {
+  margin: 0 auto var(--spacing-large);
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-grid__empty-title,
+.dashboard-empty__title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-foreground);
+  margin-bottom: var(--spacing-small);
+}
+
+.image-grid__empty-description,
+.dashboard-empty__description {
+  font-size: 16px;
+  color: var(--color-muted);
+  margin-bottom: var(--spacing-xlarge);
+  line-height: 1.5;
+}
+
+.dashboard-empty__actions {
+  display: flex;
+  gap: var(--spacing-small);
+  justify-content: center;
+}
+
+.dashboard-empty__upload-button {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-large) var(--spacing-xlarge);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: var(--radius-large);
+  color: white !important;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+
+  svg {
+    width: 24px;
+    * {
+      color: #fff !important;
+    }
+  }
+}
+
+.dashboard-empty__upload-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+// 스크롤
+*::-webkit-scrollbar {
+  width: 10px;
+}
+*::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: 8px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.32);
+}
+
+main {
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+  &::-webkit-scrollbar-track {
+    background: #2c2c2c29;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.22);
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(143, 68, 68, 0.32);
+  }
+}
+
+.nextjs-toast {
+  display: none !important;
+}

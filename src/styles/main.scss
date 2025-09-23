@@ -1,0 +1,32 @@
+// Main SCSS file
+// Import all styles in the correct order
+
+// 1. Variables and mixins
+@import './_variables';
+@import './_mixins';
+
+// 2. Base styles
+@import './_base';
+
+// 3. Component styles
+@import './components/_button';
+@import './components/_card';
+@import './components/_modal';
+@import './components/_image-grid';
+@import './components/_image-card';
+@import './components/_filter-button';
+@import './components/_view-toggle';
+@import './components/_search-bar';
+@import './components/_gallery';
+@import './components/_app-layout';
+@import './components/_dashboard';
+@import './components/_upload';
+
+// 4. Page styles
+@import './pages/_onboarding';
+@import './pages/_login';
+@import './pages/_dashboard';
+@import './pages/_dashboard-redirect';
+
+// 5. Utilities
+@import './_utilities';

@@ -1,0 +1,317 @@
+// Dashboard page styles
+
+// New simplified dashboard styles
+.dashboard-container {
+  min-height: 100vh;
+  background-color: $secondary-50;
+  
+  .dark & {
+    background-color: $secondary-900;
+  }
+}
+
+.dashboard-content {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: $spacing-8 $spacing-4;
+  
+  @include mobile {
+    padding: $spacing-6 $spacing-3;
+  }
+}
+
+.gallery-controls-wrapper {
+  margin-bottom: $spacing-8;
+  
+  @include mobile {
+    margin-bottom: $spacing-6;
+  }
+}
+
+// Loading States
+.loading-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $secondary-50;
+  
+  .dark & {
+    background-color: $secondary-900;
+  }
+}
+
+.loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid $secondary-200;
+  border-top: 3px solid $primary-600;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  
+  .dark & {
+    border-color: $secondary-700;
+    border-top-color: $primary-400;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Legacy dashboard styles (keeping for compatibility)
+.dashboard {
+  min-height: 100vh;
+  background: $secondary-50;
+  
+  .dark & {
+    background: $secondary-900;
+  }
+  
+  // Header
+  &__header {
+    background: white;
+    border-bottom: 1px solid $secondary-200;
+    padding: $spacing-4 $spacing-6;
+    @include flex-between;
+    
+    .dark & {
+      background: $secondary-800;
+      border-bottom-color: $secondary-700;
+    }
+    
+    &-title {
+      font-size: $font-size-2xl;
+      font-weight: $font-weight-semibold;
+      color: $secondary-900;
+      
+      .dark & {
+        color: $secondary-100;
+      }
+    }
+    
+    &-actions {
+      @include flex-center;
+      gap: $spacing-3;
+    }
+  }
+  
+  // Main content
+  &__content {
+    padding: $spacing-6;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  // Controls
+  &__controls {
+    @include flex-between;
+    margin-bottom: $spacing-6;
+    flex-wrap: wrap;
+    gap: $spacing-4;
+    
+    @include mobile {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+  
+  // Search and filters
+  &__search {
+    flex: 1;
+    max-width: 400px;
+    
+    @include mobile {
+      max-width: none;
+    }
+  }
+  
+  &__filters {
+    @include flex-center;
+    gap: $spacing-3;
+    flex-wrap: wrap;
+  }
+  
+  // Gallery
+  &__gallery {
+    &-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: $spacing-4;
+      margin-bottom: $spacing-8;
+      
+      @include mobile {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: $spacing-3;
+      }
+    }
+    
+    &-item {
+      position: relative;
+      border-radius: $border-radius-lg;
+      overflow: hidden;
+      background: white;
+      box-shadow: $shadow-sm;
+      transition: all $transition-normal;
+      cursor: pointer;
+      
+      .dark & {
+        background: $secondary-800;
+      }
+      
+      &:hover {
+        box-shadow: $shadow-lg;
+        transform: translateY(-2px);
+      }
+      
+      &-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        background: $secondary-100;
+        
+        .dark & {
+          background: $secondary-700;
+        }
+      }
+      
+      &-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.7) 100%);
+        opacity: 0;
+        transition: opacity $transition-normal;
+        @include flex-center;
+        
+        .dashboard__gallery-item:hover & {
+          opacity: 1;
+        }
+      }
+      
+      &-actions {
+        @include flex-center;
+        gap: $spacing-2;
+      }
+      
+      &-info {
+        padding: $spacing-3;
+        
+        &-title {
+          font-size: $font-size-sm;
+          font-weight: $font-weight-medium;
+          color: $secondary-900;
+          margin-bottom: $spacing-1;
+          @include text-truncate;
+          
+          .dark & {
+            color: $secondary-100;
+          }
+        }
+        
+        &-meta {
+          font-size: $font-size-xs;
+          color: $secondary-500;
+          
+          .dark & {
+            color: $secondary-400;
+          }
+        }
+      }
+    }
+  }
+  
+  // Loading state
+  &__loading {
+    @include flex-center;
+    padding: $spacing-16;
+    
+    &-spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid $secondary-200;
+      border-top: 4px solid $primary-500;
+      border-radius: 50%;
+      @include loading-spinner;
+    }
+  }
+  
+  // Empty state
+  &__empty {
+    @include flex-column-center;
+    padding: $spacing-16;
+    text-align: center;
+    
+    &-icon {
+      width: 80px;
+      height: 80px;
+      background: $secondary-100;
+      border-radius: $border-radius-full;
+      @include flex-center;
+      margin-bottom: $spacing-4;
+      
+      .dark & {
+        background: $secondary-800;
+      }
+    }
+    
+    &-title {
+      font-size: $font-size-xl;
+      font-weight: $font-weight-semibold;
+      color: $secondary-900;
+      margin-bottom: $spacing-2;
+      
+      .dark & {
+        color: $secondary-100;
+      }
+    }
+    
+    &-description {
+      color: $secondary-600;
+      margin-bottom: $spacing-6;
+      
+      .dark & {
+        color: $secondary-400;
+      }
+    }
+  }
+  
+  // Error state
+  &__error {
+    @include flex-column-center;
+    padding: $spacing-16;
+    text-align: center;
+    
+    &-icon {
+      width: 80px;
+      height: 80px;
+      background: $error-100;
+      border-radius: $border-radius-full;
+      @include flex-center;
+      margin-bottom: $spacing-4;
+      
+      .dark & {
+        background: $error-900;
+      }
+    }
+    
+    &-title {
+      font-size: $font-size-xl;
+      font-weight: $font-weight-semibold;
+      color: $error-600;
+      margin-bottom: $spacing-2;
+    }
+    
+    &-description {
+      color: $secondary-600;
+      margin-bottom: $spacing-6;
+      
+      .dark & {
+        color: $secondary-400;
+      }
+    }
+  }
+}

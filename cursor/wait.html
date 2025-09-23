@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cursor UI - Wait (Static)</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const total = 10;
+      let left = total;
+      const count = document.getElementById('count');
+      const fill = document.getElementById('fill');
+      const timer = setInterval(() => {
+        left = Math.max(0, left - 1);
+        count.textContent = String(left);
+        fill.style.width = ((total - left) / total * 100) + '%';
+        if (left === 0) clearInterval(timer);
+      }, 1000);
+    });
+  </script>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="brand">
+        <div class="brand-dot"></div>
+        <div class="brand-line"></div>
+        <div class="brand-title">memory</div>
+        <div class="brand-sub">a prism</div>
+      </div>
+      <nav class="nav">
+        <a class="btn" href="./index.html">대시보드</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div class="wait-panel">
+        <div class="wait-count" id="count">10</div>
+        <div class="wait-text">AI 앨범 환경을 준비 중입니다...</div>
+        <div class="wait-bar"><div class="wait-fill" id="fill" style="width:0%"></div></div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
+
+

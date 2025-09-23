@@ -1,0 +1,233 @@
+/* Header Styles */
+
+.dashboard-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-backdrop);
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-sm);
+}
+
+.header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 4rem;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.logo-container {
+  width: 2.5rem;
+  height: 2.5rem;
+  background: var(--gradient-primary);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-normal);
+}
+
+.logo-container:hover {
+  transform: scale(1.05);
+  box-shadow: var(--shadow-lg);
+}
+
+.logo-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: white;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-title {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  background: var(--gradient-prism);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.action-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border: none;
+  border-radius: var(--radius-lg);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+}
+
+.action-button.primary {
+  background: var(--gradient-primary);
+  color: white;
+  box-shadow: var(--shadow-md);
+}
+
+.action-button.primary:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg);
+}
+
+.action-button.primary:active {
+  transform: translateY(0);
+}
+
+.action-button.secondary {
+  background: var(--glass-bg);
+  color: var(--primary-700);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: var(--glass-backdrop);
+}
+
+.action-button.secondary:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.dark .action-button.secondary {
+  color: var(--primary-300);
+}
+
+.dark .action-button.secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.button-icon {
+  width: 1rem;
+  height: 1rem;
+  transition: transform var(--transition-normal);
+}
+
+.action-button:hover .button-icon {
+  transform: scale(1.1);
+}
+
+.button-text {
+  font-weight: 600;
+}
+
+.user-section {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  backdrop-filter: var(--glass-backdrop);
+}
+
+.user-icon {
+  width: 1rem;
+  height: 1rem;
+  color: var(--primary-600);
+}
+
+.dark .user-icon {
+  color: var(--primary-400);
+}
+
+.user-email {
+  font-size: var(--text-sm);
+  color: var(--primary-700);
+  font-weight: 500;
+}
+
+.dark .user-email {
+  color: var(--primary-300);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .header-container {
+    padding: 0 var(--space-3);
+  }
+
+  .header-content {
+    height: 3.5rem;
+  }
+
+  .logo-container {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .logo-icon {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .brand-title {
+    font-size: var(--text-lg);
+  }
+
+  .header-actions {
+    gap: var(--space-2);
+  }
+
+  .action-button {
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--text-xs);
+  }
+
+  .user-info {
+    padding: var(--space-1) var(--space-2);
+  }
+
+  .user-email {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-actions {
+    gap: var(--space-1);
+  }
+
+  .action-button .button-text {
+    display: none;
+  }
+
+  .action-button {
+    padding: var(--space-2);
+    border-radius: var(--radius-md);
+  }
+}

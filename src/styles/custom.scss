@@ -1,0 +1,235 @@
+// Prism Memory - Custom SCSS Styles
+// Tailwind를 기본으로 하고 커스텀 스타일은 여기서 정의
+
+// Prism Memory Brand Elements
+.prism-gradient {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.memory-gradient {
+  background: var(--gradient-memory);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.prism-glow {
+  box-shadow: var(--shadow-prism);
+}
+
+// Custom Button Variants
+.btn-prism {
+  @apply bg-primary-500 text-white font-medium px-6 py-3 rounded-lg;
+  @apply transition-all duration-200 ease-in-out;
+  @apply hover:bg-primary-600 hover:shadow-lg;
+  @apply active:bg-primary-700 active:scale-95;
+  @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+  
+  &:disabled {
+    @apply opacity-50 cursor-not-allowed hover:bg-primary-500 hover:shadow-none active:scale-100;
+  }
+}
+
+.btn-memory {
+  @apply bg-accent-500 text-white font-medium px-6 py-3 rounded-lg;
+  @apply transition-all duration-200 ease-in-out;
+  @apply hover:bg-accent-600 hover:shadow-lg;
+  @apply active:bg-accent-700 active:scale-95;
+  @apply focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2;
+  
+  &:disabled {
+    @apply opacity-50 cursor-not-allowed hover:bg-accent-500 hover:shadow-none active:scale-100;
+  }
+}
+
+.btn-outline {
+  @apply bg-transparent text-primary-500 border border-primary-500 font-medium px-6 py-3 rounded-lg;
+  @apply transition-all duration-200 ease-in-out;
+  @apply hover:bg-primary-50 hover:border-primary-600 hover:text-primary-600;
+  @apply active:bg-primary-100 active:scale-95;
+  @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+  
+  &:disabled {
+    @apply opacity-50 cursor-not-allowed hover:bg-transparent hover:border-primary-500 hover:text-primary-500 active:scale-100;
+  }
+}
+
+// Custom Card Variants
+.card-prism {
+  @apply bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700;
+  @apply rounded-lg shadow-sm;
+}
+
+.card-memory {
+  @apply bg-gradient-memory text-white border-0;
+  @apply rounded-lg shadow-lg;
+}
+
+// Custom Input Styles
+.input-prism {
+  @apply w-full px-4 py-3 border border-gray-300 dark:border-gray-600;
+  @apply rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white;
+  @apply transition-all duration-150 ease-in-out;
+  @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent;
+  
+  &::placeholder {
+    @apply text-gray-500 dark:text-gray-400;
+  }
+}
+
+// Custom Loading Spinner
+.spinner-prism {
+  @apply w-8 h-8 border-4 border-gray-200 dark:border-gray-700;
+  @apply border-t-primary-500 rounded-full animate-spin;
+}
+
+// Custom Image Grid Enhancements
+.image-grid-enhanced {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6;
+  
+  .image-item {
+    @apply relative overflow-hidden rounded-lg shadow-sm;
+    
+    .image-overlay {
+      @apply absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent;
+      @apply opacity-0 transition-opacity duration-200 ease-in-out;
+      @apply flex flex-col justify-end p-6;
+    }
+    
+    &:hover .image-overlay {
+      @apply opacity-100;
+    }
+    
+    .image-thumbnail {
+      @apply w-full h-full object-cover;
+    }
+  }
+}
+
+// Custom Header Styles
+.header-prism {
+  @apply sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80;
+  @apply backdrop-blur-md border-b border-gray-200 dark:border-gray-700;
+  @apply shadow-sm;
+  
+  .header-title {
+    @apply text-2xl font-bold prism-gradient;
+  }
+}
+
+// Custom Search Input
+.search-input-prism {
+  @apply relative;
+  
+  .search-icon {
+    @apply absolute left-3 top-1/2 transform -translate-y-1/2;
+    @apply w-5 h-5 text-gray-400;
+  }
+  
+  .search-field {
+    @apply w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600;
+    @apply rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white;
+    @apply transition-all duration-150 ease-in-out;
+    @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent;
+    
+    &::placeholder {
+      @apply text-gray-500 dark:text-gray-400;
+    }
+  }
+  
+  .search-clear {
+    @apply absolute right-3 top-1/2 transform -translate-y-1/2;
+    @apply p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700;
+    @apply transition-colors duration-150 ease-in-out;
+  }
+}
+
+// Custom Empty State
+.empty-state-prism {
+  @apply flex flex-col items-center justify-center py-16 text-center;
+  
+  .empty-icon {
+    @apply w-24 h-24 bg-gray-100 dark:bg-gray-800 rounded-full;
+    @apply flex items-center justify-center mb-6;
+    
+    .empty-emoji {
+      @apply text-4xl;
+    }
+  }
+  
+  .empty-title {
+    @apply text-xl font-semibold text-gray-900 dark:text-white mb-2;
+  }
+  
+  .empty-description {
+    @apply text-gray-500 dark:text-gray-400;
+  }
+}
+
+// Custom Modal Styles
+.modal-prism {
+  @apply fixed inset-0 z-50 flex items-center justify-center p-4;
+  
+  .modal-backdrop {
+    @apply absolute inset-0 bg-black/50 backdrop-blur-sm;
+  }
+  
+  .modal-content {
+    @apply relative bg-white dark:bg-gray-800 rounded-lg shadow-xl;
+    @apply max-w-2xl w-full max-h-[90vh] overflow-auto;
+    @apply animate-in fade-in-0 zoom-in-95 duration-300;
+  }
+}
+
+// Custom Animations
+@keyframes prism-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.prism-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(99, 102, 241, 0.1),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: prism-shimmer 2s infinite;
+}
+
+// Responsive Utilities
+@media (max-width: 640px) {
+  .image-grid-enhanced {
+    @apply grid-cols-1 gap-4;
+  }
+  
+  .header-prism .header-title {
+    @apply text-xl;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .image-grid-enhanced {
+    @apply grid-cols-2 gap-5;
+  }
+}
+
+@media (min-width: 1025px) {
+  .image-grid-enhanced {
+    @apply grid-cols-3 gap-6;
+  }
+}
+
+@media (min-width: 1280px) {
+  .image-grid-enhanced {
+    @apply grid-cols-4 gap-6;
+  }
+}

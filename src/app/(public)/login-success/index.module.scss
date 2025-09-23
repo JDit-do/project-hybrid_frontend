@@ -1,0 +1,67 @@
+.hero {
+  border-radius: 16px;
+  background: #f6f0eb;
+  color: #000;
+  padding: 40px;
+}
+
+.waitPanel {
+  height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.waitCount {
+  font-size: 48px;
+  font-weight: 700;
+  color: #6366f1;
+}
+
+.waitText {
+  font-size: 16px;
+  color: #c7c7c7;
+}
+
+.waitBar {
+  width: 100%;
+  height: 8px;
+  background: rgba(99, 102, 241, 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.waitFill {
+  height: 100%;
+  background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%);
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.buttonPrimary {
+  padding: 8px 20px;
+  border-radius: 12px;
+  font-weight: 600;
+  color: #fff !important;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  border: none;
+  cursor: pointer;
+}
+
+.buttonSecondary {
+  padding: 8px 20px;
+  border-radius: 12px;
+  font-weight: 600;
+  color: #6366f1 !important;
+  background: rgba(255, 255, 255, 0.8);
+  border: 2px solid #6366f1;
+  cursor: pointer;
+}
+
+

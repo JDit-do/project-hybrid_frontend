@@ -1,0 +1,472 @@
+// Modern Card Component
+// 현대적이고 세련된 카드 컴포넌트
+
+.card {
+  @include card-base;
+  
+  // Card Variants
+  &--default {
+    @include card-base;
+  }
+  
+  &--elevated {
+    @include card-elevated;
+  }
+  
+  &--glass {
+    @include card-glass;
+  }
+  
+  &--gradient {
+    @include card-base;
+    background: $gradient-primary;
+    color: white;
+    border: none;
+    
+    .card__title,
+    .card__description,
+    .card__content {
+      color: white;
+    }
+  }
+  
+  &--modern {
+    @include card-base;
+    background: $background;
+    border: 1px solid $border;
+    box-shadow: $shadow-md;
+    position: relative;
+    overflow: hidden;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: $gradient-primary;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform $transition-normal;
+    }
+    
+    &:hover::before {
+      transform: scaleX(1);
+    }
+    
+    &:hover {
+      transform: translateY(-6px);
+      box-shadow: $shadow-xl;
+      border-color: $primary-200;
+    }
+  }
+  
+  &--minimal {
+    @include card-base;
+    background: transparent;
+    border: 1px solid $border;
+    box-shadow: none;
+    
+    &:hover {
+      background: $muted;
+      transform: translateY(-2px);
+      box-shadow: $shadow-sm;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      &:hover {
+        background: $dark-muted;
+      }
+    }
+    
+    .dark &:hover {
+      background: $dark-muted;
+    }
+  }
+  
+  &--interactive {
+    @include interactive;
+    cursor: pointer;
+    
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: $shadow-lg;
+    }
+  }
+  
+  // Card Hover Effect
+  &--hover {
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: $shadow-lg;
+      border-color: $primary-200;
+    }
+  }
+  
+  // Card Header
+  &__header {
+    padding: $spacing-6 $spacing-6 0 $spacing-6;
+    
+    @include mobile {
+      padding: $spacing-4 $spacing-4 0 $spacing-4;
+    }
+  }
+  
+  // Card Title
+  &__title {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-semibold;
+    color: $foreground;
+    margin-bottom: $spacing-2;
+    line-height: $line-height-tight;
+    
+    @media (prefers-color-scheme: dark) {
+      color: $dark-foreground;
+    }
+    
+    .dark & {
+      color: $dark-foreground;
+    }
+    
+    @include mobile {
+      font-size: $font-size-lg;
+    }
+  }
+  
+  // Card Description
+  &__description {
+    font-size: $font-size-sm;
+    color: $muted-foreground;
+    line-height: $line-height-relaxed;
+    margin-bottom: $spacing-4;
+    
+    @media (prefers-color-scheme: dark) {
+      color: $dark-muted-foreground;
+    }
+    
+    .dark & {
+      color: $dark-muted-foreground;
+    }
+  }
+  
+  // Card Content
+  &__content {
+    padding: $spacing-6;
+    color: $foreground;
+    
+    @media (prefers-color-scheme: dark) {
+      color: $dark-foreground;
+    }
+    
+    .dark & {
+      color: $dark-foreground;
+    }
+    
+    @include mobile {
+      padding: $spacing-4;
+    }
+  }
+  
+  // Card Footer
+  &__footer {
+    padding: 0 $spacing-6 $spacing-6 $spacing-6;
+    border-top: 1px solid $border;
+    margin-top: $spacing-4;
+    padding-top: $spacing-4;
+    
+    @media (prefers-color-scheme: dark) {
+      border-top-color: $dark-border;
+    }
+    
+    .dark & {
+      border-top-color: $dark-border;
+    }
+    
+    @include mobile {
+      padding: 0 $spacing-4 $spacing-4 $spacing-4;
+    }
+  }
+  
+  // Card Image
+  &__image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: $border-radius-lg $border-radius-lg 0 0;
+    background: $muted;
+    
+    @media (prefers-color-scheme: dark) {
+      background: $dark-muted;
+    }
+    
+    .dark & {
+      background: $dark-muted;
+    }
+  }
+  
+  // Card Actions
+  &__actions {
+    display: flex;
+    gap: $spacing-2;
+    margin-top: $spacing-4;
+    flex-wrap: wrap;
+    
+    .button {
+      flex: 1;
+      min-width: 0;
+    }
+  }
+  
+  // Card Stats
+  &__stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: $spacing-4 $spacing-6;
+    background: $muted;
+    border-top: 1px solid $border;
+    font-size: $font-size-sm;
+    color: $muted-foreground;
+    
+    @media (prefers-color-scheme: dark) {
+      background: $dark-muted;
+      border-top-color: $dark-border;
+      color: $dark-muted-foreground;
+    }
+    
+    .dark & {
+      background: $dark-muted;
+      border-top-color: $dark-border;
+      color: $dark-muted-foreground;
+    }
+    
+    @include mobile {
+      padding: $spacing-3 $spacing-4;
+    }
+  }
+  
+  // Card Badge
+  &__badge {
+    position: absolute;
+    top: $spacing-3;
+    right: $spacing-3;
+    background: $gradient-primary;
+    color: white;
+    padding: $spacing-1 $spacing-2;
+    border-radius: $border-radius-full;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    z-index: 10;
+  }
+  
+  // Card Loading State
+  &--loading {
+    .card__content {
+      @include loading-shimmer;
+      min-height: 100px;
+    }
+  }
+  
+  // Card Sizes
+  &--sm {
+    .card__header,
+    .card__content,
+    .card__footer {
+      padding: $spacing-4;
+    }
+    
+    .card__title {
+      font-size: $font-size-lg;
+    }
+  }
+  
+  &--lg {
+    .card__header,
+    .card__content,
+    .card__footer {
+      padding: $spacing-8;
+    }
+    
+    .card__title {
+      font-size: $font-size-2xl;
+    }
+    
+    @include mobile {
+      .card__header,
+      .card__content,
+      .card__footer {
+        padding: $spacing-6;
+      }
+      
+      .card__title {
+        font-size: $font-size-xl;
+      }
+    }
+  }
+  
+  // Card Grid
+  &-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: $spacing-6;
+    
+    @include mobile {
+      grid-template-columns: 1fr;
+      gap: $spacing-4;
+    }
+  }
+  
+  // Card List
+  &-list {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-4;
+  }
+  
+  // Card Masonry
+  &-masonry {
+    column-count: 3;
+    column-gap: $spacing-6;
+    
+    .card {
+      break-inside: avoid;
+      margin-bottom: $spacing-6;
+    }
+    
+    @include mobile {
+      column-count: 1;
+    }
+  }
+}
+
+// Card Animations
+@keyframes card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card {
+  animation: card-enter $transition-normal ease-out;
+}
+
+// Card Hover Effects
+.card {
+  &--float {
+    &:hover {
+      animation: float 3s ease-in-out infinite;
+    }
+  }
+  
+  &--glow {
+    &:hover {
+      box-shadow: $shadow-glow-primary;
+    }
+  }
+  
+  &--scale {
+    &:hover {
+      transform: scale(1.02);
+    }
+  }
+}
+
+// Card States
+.card {
+  &--selected {
+    border-color: $primary-500;
+    box-shadow: $shadow-glow-primary;
+  }
+  
+  &--disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  
+  &--error {
+    border-color: $error-500;
+    background: rgba($error-500, 0.05);
+  }
+  
+  &--success {
+    border-color: $success-500;
+    background: rgba($success-500, 0.05);
+  }
+  
+  &--warning {
+    border-color: $warning-500;
+    background: rgba($warning-500, 0.05);
+  }
+}
+
+// Dark Mode Adjustments
+@media (prefers-color-scheme: dark) {
+  .card {
+    &--gradient {
+      background: $gradient-dark;
+    }
+    
+    &--minimal {
+      &:hover {
+        background: $dark-muted;
+      }
+    }
+  }
+}
+
+.dark .card {
+  &--gradient {
+    background: $gradient-dark;
+  }
+  
+  &--minimal {
+    &:hover {
+      background: $dark-muted;
+    }
+  }
+}
+
+// Accessibility
+.card {
+  &:focus-visible {
+    outline: 2px solid $ring;
+    outline-offset: 2px;
+  }
+  
+  // High contrast mode support
+  @media (prefers-contrast: high) {
+    border: 2px solid currentColor;
+  }
+  
+  // Reduced motion support
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+    
+    &:hover {
+      transform: none;
+    }
+    
+    &::before {
+      display: none;
+    }
+  }
+}
+
+// Card Responsive Design
+@include mobile {
+  .card {
+    &--lg {
+      .card__header,
+      .card__content,
+      .card__footer {
+        padding: $spacing-4;
+      }
+    }
+  }
+}

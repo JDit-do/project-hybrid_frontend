@@ -1,0 +1,368 @@
+// Modern Filter Button Component
+// 현대적이고 인터랙티브한 필터 버튼 컴포넌트
+
+.filter-button {
+  @include button-base;
+  position: relative;
+  overflow: hidden;
+  transition: all $transition-normal;
+  border-radius: $border-radius-lg;
+  font-weight: $font-weight-medium;
+  white-space: nowrap;
+  
+  // Button Sizes
+  &--sm {
+    padding: $spacing-2 $spacing-3;
+    font-size: $font-size-xs;
+    border-radius: $border-radius-md;
+    
+    .filter-button__count {
+      font-size: $font-size-xs;
+      padding: $spacing-1 $spacing-1-5;
+    }
+  }
+  
+  &--md {
+    padding: $spacing-2-5 $spacing-4;
+    font-size: $font-size-sm;
+    border-radius: $border-radius-lg;
+    
+    .filter-button__count {
+      font-size: $font-size-xs;
+      padding: $spacing-1 $spacing-2;
+    }
+  }
+  
+  &--lg {
+    padding: $spacing-3 $spacing-6;
+    font-size: $font-size-base;
+    border-radius: $border-radius-xl;
+    
+    .filter-button__count {
+      font-size: $font-size-sm;
+      padding: $spacing-1-5 $spacing-2-5;
+    }
+  }
+  
+  // Button Variants
+  &--default {
+    background: $muted;
+    color: $muted-foreground;
+    border: 1px solid $border;
+    
+    &:hover:not(:disabled) {
+      background: $muted/80;
+      border-color: $primary-200;
+      color: $foreground;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      background: $dark-muted;
+      color: $dark-muted-foreground;
+      border-color: $dark-border;
+      
+      &:hover:not(:disabled) {
+        background: $dark-muted/80;
+        border-color: $primary-400;
+        color: $dark-foreground;
+      }
+    }
+    
+    .dark & {
+      background: $dark-muted;
+      color: $dark-muted-foreground;
+      border-color: $dark-border;
+      
+      &:hover:not(:disabled) {
+        background: $dark-muted/80;
+        border-color: $primary-400;
+        color: $dark-foreground;
+      }
+    }
+  }
+  
+  &--outline {
+    background: transparent;
+    color: $foreground;
+    border: 2px solid $border;
+    
+    &:hover:not(:disabled) {
+      background: $muted;
+      border-color: $primary-500;
+      color: $primary-600;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      color: $dark-foreground;
+      border-color: $dark-border;
+      
+      &:hover:not(:disabled) {
+        background: $dark-muted;
+        border-color: $primary-400;
+        color: $primary-400;
+      }
+    }
+    
+    .dark & {
+      color: $dark-foreground;
+      border-color: $dark-border;
+      
+      &:hover:not(:disabled) {
+        background: $dark-muted;
+        border-color: $primary-400;
+        color: $primary-400;
+      }
+    }
+  }
+  
+  &--ghost {
+    background: transparent;
+    color: $muted-foreground;
+    border: 1px solid transparent;
+    
+    &:hover:not(:disabled) {
+      background: $muted;
+      color: $foreground;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      color: $dark-muted-foreground;
+      
+      &:hover:not(:disabled) {
+        background: $dark-muted;
+        color: $dark-foreground;
+      }
+    }
+    
+    .dark & {
+      color: $dark-muted-foreground;
+      
+      &:hover:not(:disabled) {
+        background: $dark-muted;
+        color: $dark-foreground;
+      }
+    }
+  }
+  
+  &--pill {
+    background: $muted;
+    color: $muted-foreground;
+    border: 1px solid $border;
+    border-radius: $border-radius-full;
+    
+    &:hover:not(:disabled) {
+      background: $primary-100;
+      border-color: $primary-300;
+      color: $primary-700;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      background: $dark-muted;
+      color: $dark-muted-foreground;
+      border-color: $dark-border;
+      
+      &:hover:not(:disabled) {
+        background: $primary-900;
+        border-color: $primary-700;
+        color: $primary-300;
+      }
+    }
+    
+    .dark & {
+      background: $dark-muted;
+      color: $dark-muted-foreground;
+      border-color: $dark-border;
+      
+      &:hover:not(:disabled) {
+        background: $primary-900;
+        border-color: $primary-700;
+        color: $primary-300;
+      }
+    }
+  }
+  
+  // Active State
+  &--active {
+    background: $gradient-primary;
+    color: white;
+    border-color: $primary-500;
+    box-shadow: $shadow-md;
+    
+    &:hover:not(:disabled) {
+      background: $gradient-primary;
+      transform: translateY(-2px);
+      box-shadow: $shadow-lg;
+    }
+    
+    .filter-button__count {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+    }
+  }
+  
+  // Disabled State
+  &--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+.filter-button__label {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+}
+
+.filter-button__count {
+  background: $muted-foreground;
+  color: white;
+  border-radius: $border-radius-full;
+  font-weight: $font-weight-semibold;
+  min-width: 20px;
+  text-align: center;
+  transition: all $transition-fast;
+  
+  @media (prefers-color-scheme: dark) {
+    background: $dark-muted-foreground;
+  }
+  
+  .dark & {
+    background: $dark-muted-foreground;
+  }
+}
+
+// Filter Button Group
+.filter-group {
+  display: flex;
+  gap: $spacing-2;
+  flex-wrap: wrap;
+  
+  &--pills {
+    .filter-button {
+      border-radius: $border-radius-full;
+    }
+  }
+  
+  &--tabs {
+    .filter-button {
+      border-radius: $border-radius-lg $border-radius-lg 0 0;
+      border-bottom: none;
+      
+      &--active {
+        border-bottom: 2px solid $primary-500;
+        margin-bottom: -1px;
+      }
+    }
+  }
+  
+  @include mobile {
+    gap: $spacing-1;
+    
+    .filter-button {
+      &--sm {
+        padding: $spacing-1-5 $spacing-2-5;
+        font-size: $font-size-xs;
+      }
+      
+      &--md {
+        padding: $spacing-2 $spacing-3;
+        font-size: $font-size-xs;
+      }
+    }
+  }
+}
+
+// Filter Button Animations
+@keyframes filter-button-pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.filter-button {
+  &--pulse {
+    animation: filter-button-pulse 2s infinite;
+  }
+}
+
+// Filter Button Ripple Effect
+.filter-button {
+  position: relative;
+  overflow: hidden;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width $transition-slow, height $transition-slow;
+  }
+  
+  &:active::after {
+    width: 300px;
+    height: 300px;
+  }
+}
+
+// Dark Mode Adjustments
+@media (prefers-color-scheme: dark) {
+  .filter-button {
+    &--active {
+      .filter-button__count {
+        background: rgba(255, 255, 255, 0.2);
+      }
+    }
+  }
+}
+
+.dark .filter-button {
+  &--active {
+    .filter-button__count {
+      background: rgba(255, 255, 255, 0.2);
+    }
+  }
+}
+
+// Accessibility
+.filter-button {
+  &:focus-visible {
+    outline: 2px solid $ring;
+    outline-offset: 2px;
+  }
+  
+  // High contrast mode support
+  @media (prefers-contrast: high) {
+    border: 2px solid currentColor;
+  }
+  
+  // Reduced motion support
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+    
+    &:hover {
+      transform: none;
+    }
+    
+    &::after {
+      display: none;
+    }
+  }
+}
+
+
+
+
+
+

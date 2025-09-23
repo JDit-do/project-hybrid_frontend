@@ -1,0 +1,42 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  height: 100%;
+
+  ul {
+    display: flex;
+    gap: 20px;
+
+    li {
+      position: relative;
+
+      .image {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 624px;
+        height: 474px;
+        padding: 0.5rem;
+        background: #121212;
+        border-radius: 1.5rem;
+        overflow: hidden;
+
+        img {
+          width: 100%;
+          height: auto;
+        }
+      }
+
+      .title {
+        color: var(--color-foreground);
+        position: absolute;
+        bottom: 1rem;
+        right: 1rem;
+        opacity: 0.4;
+      }
+    }
+  }
+}

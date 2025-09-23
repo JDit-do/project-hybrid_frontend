@@ -1,0 +1,9 @@
+.wrap {
+  display: flex;
+  justify-content: space-between;
+
+  .information {
+    display: flex;
+    gap: 1rem;
+  }
+}

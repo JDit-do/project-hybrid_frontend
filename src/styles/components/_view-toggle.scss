@@ -1,0 +1,308 @@
+// Modern View Toggle Component
+// 현대적이고 인터랙티브한 뷰 토글 컴포넌트
+
+.view-toggle {
+  display: inline-flex;
+  background: $muted;
+  border-radius: $border-radius-lg;
+  padding: $spacing-1;
+  box-shadow: $shadow-sm;
+  border: 1px solid $border;
+  
+  @media (prefers-color-scheme: dark) {
+    background: $dark-muted;
+    border-color: $dark-border;
+  }
+  
+  .dark & {
+    background: $dark-muted;
+    border-color: $dark-border;
+  }
+  
+  // Toggle Sizes
+  &--sm {
+    padding: $spacing-1;
+    border-radius: $border-radius-md;
+    
+    .view-toggle__button {
+      width: 28px;
+      height: 28px;
+      
+      .view-toggle__icon {
+        width: 14px;
+        height: 14px;
+      }
+    }
+  }
+  
+  &--md {
+    padding: $spacing-1;
+    border-radius: $border-radius-lg;
+    
+    .view-toggle__button {
+      width: 36px;
+      height: 36px;
+      
+      .view-toggle__icon {
+        width: 16px;
+        height: 16px;
+      }
+    }
+  }
+  
+  &--lg {
+    padding: $spacing-1-5;
+    border-radius: $border-radius-xl;
+    
+    .view-toggle__button {
+      width: 44px;
+      height: 44px;
+      
+      .view-toggle__icon {
+        width: 18px;
+        height: 18px;
+      }
+    }
+  }
+}
+
+.view-toggle__button {
+  @include flex-center;
+  background: transparent;
+  border: none;
+  border-radius: $border-radius-md;
+  cursor: pointer;
+  transition: all $transition-fast;
+  color: $muted-foreground;
+  position: relative;
+  overflow: hidden;
+  
+  &:hover:not(.view-toggle__button--active) {
+    background: $muted/60;
+    color: $foreground;
+  }
+  
+  &:focus-visible {
+    outline: 2px solid $ring;
+    outline-offset: 2px;
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    color: $dark-muted-foreground;
+    
+    &:hover:not(.view-toggle__button--active) {
+      background: $dark-muted/60;
+      color: $dark-foreground;
+    }
+  }
+  
+  .dark & {
+    color: $dark-muted-foreground;
+    
+    &:hover:not(.view-toggle__button--active) {
+      background: $dark-muted/60;
+      color: $dark-foreground;
+    }
+  }
+  
+  // Active State
+  &--active {
+    background: $gradient-primary;
+    color: white;
+    box-shadow: $shadow-md;
+    
+    &:hover {
+      background: $gradient-primary;
+      transform: translateY(-1px);
+      box-shadow: $shadow-lg;
+    }
+    
+    .view-toggle__icon {
+      color: white;
+    }
+  }
+  
+  // Ripple Effect
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width $transition-slow, height $transition-slow;
+  }
+  
+  &:active::after {
+    width: 200px;
+    height: 200px;
+  }
+}
+
+.view-toggle__icon {
+  transition: all $transition-fast;
+  color: inherit;
+  
+  .view-toggle__button:hover & {
+    transform: scale(1.1);
+  }
+  
+  .view-toggle__button--active & {
+    transform: scale(1.1);
+  }
+}
+
+// View Toggle Animations
+@keyframes view-toggle-slide {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.view-toggle__button {
+  animation: view-toggle-slide $transition-normal ease-out;
+  
+  &:nth-child(1) { animation-delay: 0ms; }
+  &:nth-child(2) { animation-delay: 50ms; }
+  &:nth-child(3) { animation-delay: 100ms; }
+}
+
+// View Toggle Hover Effects
+.view-toggle {
+  &--glow {
+    .view-toggle__button--active {
+      box-shadow: $shadow-glow-primary;
+    }
+  }
+  
+  &--bounce {
+    .view-toggle__button--active {
+      animation: bounce 0.6s ease-in-out;
+    }
+  }
+  
+  &--pulse {
+    .view-toggle__button--active {
+      animation: pulse 2s infinite;
+    }
+  }
+}
+
+// View Toggle States
+.view-toggle {
+  &--disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  
+  &--loading {
+    .view-toggle__button {
+      pointer-events: none;
+      
+      &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 16px;
+        height: 16px;
+        margin: -8px 0 0 -8px;
+        border: 2px solid transparent;
+        border-top: 2px solid currentColor;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+    }
+  }
+}
+
+// View Toggle Responsive Design
+@include mobile {
+  .view-toggle {
+    &--lg {
+      padding: $spacing-1;
+      
+      .view-toggle__button {
+        width: 36px;
+        height: 36px;
+        
+        .view-toggle__icon {
+          width: 16px;
+          height: 16px;
+        }
+      }
+    }
+  }
+}
+
+// Dark Mode Adjustments
+@media (prefers-color-scheme: dark) {
+  .view-toggle {
+    background: $dark-muted;
+    border-color: $dark-border;
+  }
+}
+
+.dark .view-toggle {
+  background: $dark-muted;
+  border-color: $dark-border;
+}
+
+// Accessibility
+.view-toggle {
+  // High contrast mode support
+  @media (prefers-contrast: high) {
+    border: 2px solid currentColor;
+    
+    .view-toggle__button {
+      border: 1px solid currentColor;
+    }
+  }
+  
+  // Reduced motion support
+  @media (prefers-reduced-motion: reduce) {
+    .view-toggle__button {
+      transition: none;
+      
+      &:hover {
+        transform: none;
+      }
+      
+      &::after {
+        display: none;
+      }
+    }
+    
+    .view-toggle__icon {
+      transition: none;
+      
+      &:hover {
+        transform: none;
+      }
+    }
+  }
+}
+
+// Loading Animation
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+
+
+
+
+
